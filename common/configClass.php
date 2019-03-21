@@ -40,6 +40,19 @@ class configClass extends DaftarObj2 {
     }
 
   }
+  function baseToImage($base64_string, $output_file) {
+
+      $ifp = fopen( $output_file, 'wb' );
+      $data = explode( ',', $base64_string );
+
+      fwrite( $ifp, base64_decode( $data[ 1 ] ) );
+
+      fclose( $ifp );
+
+      return $output_file;
+  }
+
+
   function isiform($value){
     $isinya = '';
     $tbl ='<table width="100%">';
@@ -499,6 +512,9 @@ class configClass extends DaftarObj2 {
         $err = "Pilih Nama Bank / Kas";
       }
       return $err;
+    }
+    function dropPoint($angka){
+      return str_replace(".","",$angka);
     }
 
 

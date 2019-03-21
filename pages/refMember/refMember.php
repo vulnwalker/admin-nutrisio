@@ -5,8 +5,8 @@ class refMemberObj extends configClass
     var $Prefix = 'refMember';
     var $elCurrPage = "HalDefault";
     var $SHOW_CEK = TRUE;
-    var $TblName = 'member'; //bonus
-    var $TblName_Hapus = 'member';
+    var $TblName = 'users'; //bonus
+    var $TblName_Hapus = 'users';
     var $MaxFlush = 10;
     var $TblStyle = array('koptable', 'cetak', 'cetak'); //berdasar mode
     var $ColStyle = array('GarisDaftar', 'GarisCetak', 'GarisCetak');
@@ -114,7 +114,7 @@ class refMemberObj extends configClass
                 'upline' => json_encode($arrayUpline),
                 'tanggal_join' => date("Y-m-d"),
             );
-            $queryInsert = sqlInsert('member', $dataInsert);
+            $queryInsert = sqlInsert('users', $dataInsert);
             sqlQuery($queryInsert);
             $cek = $queryInsert;
         }
@@ -182,7 +182,7 @@ class refMemberObj extends configClass
                 'status' => $statusMember,
             );
 					}
-          $queryUpdate = sqlUpdate('member', $dataUpdate,"id = '$idEdit'");
+          $queryUpdate = sqlUpdate('users', $dataUpdate,"id = '$idEdit'");
           sqlQuery($queryUpdate);
           $cek = $queryUpdate;
         }

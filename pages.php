@@ -44,6 +44,28 @@ if (CekLogin () == false){
 				}
 				break;
 			}
+			case 'refProduk':{
+				if (CekLogin()) {  setLastAktif();
+					include('common/daftarobj.php');
+					include('common/configClass.php');
+					include("pages/refProduk/refProduk.php"); //break;
+					$refProduk->selector();
+				}else{
+					header("Location:index.php?");//header("Location: http://$Main->SITE/");
+				}
+				break;
+			}
+			case 'penjualanProduk':{
+				if (CekLogin()) {  setLastAktif();
+					include('common/daftarobj.php');
+					include('common/configClass.php');
+					include("pages/penjualanProduk/penjualanProduk.php"); //break;
+					$penjualanProduk->selector();
+				}else{
+					header("Location:index.php?");//header("Location: http://$Main->SITE/");
+				}
+				break;
+			}
 	}
 
 	ob_flush();

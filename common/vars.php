@@ -11,7 +11,7 @@ $HTTP_POST_VARS = isset($_POST)? $_POST : @$HTTP_POST_VARS;
 $HTTP_GET_VARS = isset($_GET)? $_GET : @$HTTP_GET_VARS;
 $HTTP_COOKIE_VARS = isset($_COOKIE)? $_COOKIE : @$HTTP_COOKIE_VARS;
 
-$Main->Judul = "KEUANGAN PILAR";
+$Main->Judul = "RIZKI KITA";
 $Main->CopyRightText = 'Copyright &copy; 2018. Alim Rugi Productions.';
 $Main->CopyRight =
 	"<br>

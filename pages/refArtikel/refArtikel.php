@@ -256,7 +256,7 @@ class refArtikelObj extends configClass
 
 
 
-    function Baru($dt)
+    function Baru()
     {
 
         $cek                = '';

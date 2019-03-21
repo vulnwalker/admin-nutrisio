@@ -1712,7 +1712,7 @@ function createHeaderPage($headerIco, $headerTitle,  $otherMenu='', $headerFixed
 ' >
 
 
-    <div onmouseover='$this->Prefix.bigImg()' onmouseout='$this->Prefix.normalImg()' id='collapseOne' class='collapse' role='tabpanel' aria-labelledby='headingOne' data-parent='#accordion' style='background: white;     padding-bottom: 7px;'>
+    <div  id='collapseOne' class='collapse' role='tabpanel' aria-labelledby='headingOne' data-parent='#accordion' style='background: white;     padding-bottom: 7px;'>
       <div class='card-body' id='".$this->Prefix."_cont_opsi'>
 
 

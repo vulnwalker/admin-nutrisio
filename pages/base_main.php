@@ -57,13 +57,13 @@ $Main->Base =
                     <img class='icon' src='assets/images/pengeluaran.png' alt=''>
                     <span class='branding-bar'>ARTIKEL</span>
                 </a>
-                <a href='pages.php?Pg=pengajuanSPJ' data-role='tile' class='bg-orange fg-white' data-size='wide'>
+                <a href='pages.php?Pg=refProduk' data-role='tile' class='bg-orange fg-white' data-size='wide'>
                     <img class='icon' src='assets/images/spj.png' alt=''>
-                    <span class='branding-bar'>SPJ</span>
+                    <span class='branding-bar'>PRODUK</span>
                 </a>
-                <a href='pages.php?Pg=detailSPJ' data-role='tile' data-size='wide' class='fg-white bg-crimson'>
+                <a href='pages.php?Pg=penjualanProduk' data-role='tile' data-size='wide' class='fg-white bg-crimson'>
                 		<img class='icon' src='assets/images/penanggung jawab spj.png' alt=''>
-                    <span class='branding-bar'>PERTANGGUNG JAWABAN SPJ</span>
+                    <span class='branding-bar'>PENJUALAN</span>
                 </a>
             </div>
 
