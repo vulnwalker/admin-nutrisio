@@ -1,8 +1,8 @@
-var refProduk = new DaftarObj2({
-  prefix: "refProduk",
-  url: "pages.php?Pg=refProduk",
-  formName: "refProdukForm",
-  refProduk_form: "0", //default js refProduk
+var pembayaranKomisi = new DaftarObj2({
+  prefix: "pembayaranKomisi",
+  url: "pages.php?Pg=pembayaranKomisi",
+  formName: "pembayaranKomisiForm",
+  pembayaranKomisi_form: "0", //default js pembayaranKomisi
   loading: function() {
     //alert('loading');
     this.topBarRender();
@@ -43,29 +43,6 @@ var refProduk = new DaftarObj2({
       }
     });
   },
-  showDetail: function(idProduk) {
-    var me = this;
-    var err = "";
-
-    if (err == "") {
-      var cover = this.prefix + "_formcover";
-      document.body.style.overflow = "hidden";
-      addCoverPage2(cover, 999, true, false);
-      $.ajax({
-        type: "POST",
-        data: {
-          idProduk : idProduk
-        },
-        url: this.url + "&tipe=showDetail",
-        success: function(data) {
-          var resp = eval("(" + data + ")");
-          document.getElementById(cover).innerHTML = resp.content;
-        }
-      });
-    } else {
-      alert(err);
-    }
-  },
   Baru: function() {
     var me = this;
     var err = "";
@@ -73,8 +50,8 @@ var refProduk = new DaftarObj2({
     if (err == "") {
       var cover = this.prefix + "_formcover";
       document.body.style.overflow = "hidden";
-      if (me.refProduk_form == 0) {
-        //baru dari refProduk
+      if (me.pembayaranKomisi_form == 0) {
+        //baru dari pembayaranKomisi
         addCoverPage2(cover, 999, true, false);
       } else {
         //baru dari barang
@@ -94,7 +71,7 @@ var refProduk = new DaftarObj2({
       alert(err);
     }
   },
-  Edit: function() {
+  Detail: function() {
     var me = this;
     errmsg = this.CekCheckbox();
     if (errmsg == "") {
@@ -106,7 +83,67 @@ var refProduk = new DaftarObj2({
       $.ajax({
         type: "POST",
         data: $("#" + this.formName).serialize(),
-        url: this.url + "&tipe=Edit",
+        url: this.url + "&tipe=Detail",
+        success: function(data) {
+          var resp = eval("(" + data + ")");
+          if (resp.err == "") {
+            document.getElementById(cover).innerHTML = resp.content;
+            me.AfterFormEdit(resp);
+          } else {
+            alert(resp.err);
+            delElem(cover);
+            document.body.style.overflow = "auto";
+          }
+        }
+      });
+    } else {
+      alert(errmsg);
+    }
+  },
+  // Konfirmasi: function() {
+  //   var me = this;
+  //   errmsg = this.CekCheckbox();
+  //   if (errmsg == "") {
+  //     if(confirm('Konfirmasi order ?')){
+  //       var box = this.GetCbxChecked();
+  //       var cover = this.prefix + "_formcover";
+  //       addCoverPage2(cover, 999, true, false);
+  //       document.body.style.overflow = "hidden";
+  //       $.ajax({
+  //         type: "POST",
+  //         data: $("#" + this.formName).serialize(),
+  //         url: this.url + "&tipe=Konfirmasi",
+  //         success: function(data) {
+  //           delElem(cover);
+  //           var resp = eval("(" + data + ")");
+  //           if (resp.err == "") {
+  //             alert("Konfirmasi Sukses");
+  //             me.refreshList();
+  //           } else {
+  //             alert(resp.err);
+  //             document.body.style.overflow = "auto";
+  //           }
+  //         }
+  //       });
+  //     }
+  //   } else {
+  //     alert(errmsg);
+  //   }
+  // },
+
+  Konfirmasi: function() {
+    var me = this;
+    errmsg = this.CekCheckbox();
+    if (errmsg == "") {
+      var box = this.GetCbxChecked();
+
+      var cover = this.prefix + "_formcover";
+      addCoverPage2(cover, 999, true, false);
+      document.body.style.overflow = "hidden";
+      $.ajax({
+        type: "POST",
+        data: $("#" + this.formName).serialize(),
+        url: this.url + "&tipe=Konfirmasi",
         success: function(data) {
           var resp = eval("(" + data + ")");
           if (resp.err == "") {
@@ -145,7 +182,7 @@ var refProduk = new DaftarObj2({
       }
     });
   },
-  saveEdit: function(idEdit) {
+  saveKonfirmasi: function(idEdit) {
     var me = this;
     this.OnErrorClose = false;
     document.body.style.overflow = "hidden";
@@ -153,8 +190,8 @@ var refProduk = new DaftarObj2({
     addCoverPage2(cover, 999999, true, false);
     $.ajax({
       type: "POST",
-      data: $("#" + this.prefix + "_form").serialize()+"&idEdit="+idEdit,
-      url: this.url + "&tipe=saveEdit",
+      data: $("#" + this.prefix + "_form").serialize()+"&idMember="+idEdit,
+      url: this.url + "&tipe=saveKonfirmasi",
       success: function(data) {
         var resp = eval("(" + data + ")");
         delElem(cover);

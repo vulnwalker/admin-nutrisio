@@ -105,6 +105,7 @@ class refProdukObj extends configClass
                 'nama_produk' => $namaProduk,
                 'harga' => $this->dropPoint($hargaProduk),
                 'harga_member' => $this->dropPoint($hargaProdukMember),
+                'berat' => $this->dropPoint($beratProduk),
                 'deskripsi' => $deskkripsiProduk,
                 'promo' => $promoProduk,
                 'komisi' => json_encode($arrayKomisi,JSON_PRETTY_PRINT),
@@ -160,6 +161,7 @@ class refProdukObj extends configClass
               'nama_produk' => $namaProduk,
               'harga' => $this->dropPoint($hargaProduk),
               'harga_member' => $this->dropPoint($hargaProdukMember),
+              'berat' => $this->dropPoint($beratProduk),
               'deskripsi' => $deskkripsiProduk,
               'promo' => $promoProduk,
               'komisi' => json_encode($arrayKomisi,JSON_PRETTY_PRINT),
@@ -171,6 +173,7 @@ class refProdukObj extends configClass
               'nama_produk' => $namaProduk,
               'harga' => $this->dropPoint($hargaProduk),
               'harga_member' => $this->dropPoint($hargaProdukMember),
+              'berat' => $this->dropPoint($beratProduk),
               'deskripsi' => $deskkripsiProduk,
               'promo' => $promoProduk,
               'komisi' => json_encode($arrayKomisi),
@@ -215,6 +218,15 @@ class refProdukObj extends configClass
         $json    = TRUE;
 
         switch ($tipe) {
+
+            case 'showDetail': {
+                $fm      = $this->showDetail();
+                $cek     = $fm['cek'];
+                $err     = $fm['err'];
+                $content = $fm['content'];
+                break;
+            }
+
 
             case 'Baru': {
                 $fm      = $this->Baru();
@@ -293,6 +305,60 @@ class refProdukObj extends configClass
 
 
 
+    function showDetail()
+    {
+      foreach ($_REQUEST as $key => $value) {
+          $$key = $value;
+      }
+        $cek                = '';
+        $err                = '';
+        $content            = '';
+        $json               = TRUE; //$ErrMsg = 'tes';
+        $form_name          = $this->Prefix . '_form';
+        $this->form_width   = 400;
+        $this->form_height  = 300;
+        $this->form_caption = 'Media';
+
+        $getDataProduk = sqlArray(sqlQuery("select * from $this->TblName where id = '$idProduk'"));
+        //items ----------------------
+        $this->form_fields    = array(
+
+            'gambar' => array(
+                'label' => '',
+                'labelWidth' => 150,
+                'value' => "
+                <img  src='".$getDataProduk['gambar']."' style='align:center;vertical-align:middle;height:200px;width:200px;float:center !important;'  >
+                  ",
+                "type" => "merge"
+            ),
+            'gambar2' => array(
+                'label' => '',
+                'labelWidth' => 150,
+                'value' => "
+                  <br>
+                  ",
+                "type" => "merge"
+            ),
+            'video' => array(
+                'label' => 'VIDEO',
+                'labelWidth' => 150,
+                'value' => "<a style='color:blue;' href='".$getDataProduk['video']."' target='_blank' > ".$getDataProduk['video']."</a>"
+            ),
+
+        );
+        //tombol
+        $this->form_menubawah = "
+        <input type='button' class='btn btn-success' value='Simpan' onclick ='" . $this->Prefix . ".saveNew()' title='Simpan'>&nbsp&nbsp"
+        . "<input type='button' class='btn btn-success' value='Batal' onclick ='" . $this->Prefix . ".Close()' >";
+
+        $form    = $this->genForm();
+        $content = $form; //$content = 'content';
+        return array(
+            'cek' => $cek,
+            'err' => $err,
+            'content' => $content
+        );
+    }
     function Baru()
     {
 
@@ -331,6 +397,16 @@ class refProdukObj extends configClass
                 $this->numberText(
                   array(
                     "id" => "hargaProdukMember"
+                  )
+                )
+            ),
+            'beratProduk' => array(
+                'label' => 'Berat',
+                'labelWidth' => 150,
+                'value' =>
+                $this->numberText(
+                  array(
+                    "id" => "beratProduk"
                   )
                 )
             ),
@@ -457,6 +533,17 @@ class refProdukObj extends configClass
                   array(
                     "id" => "hargaProdukMember",
                     "value" =>  $this->numberFormat(intval($harga_member))
+                  )
+                )
+            ),
+            'beratProduk' => array(
+                'label' => 'Berat',
+                'labelWidth' => 150,
+                'value' =>
+                $this->numberText(
+                  array(
+                    "id" => "beratProduk",
+                  "value" =>  $this->numberFormat(intval($berat))
                   )
                 )
             ),
@@ -610,6 +697,8 @@ class refProdukObj extends configClass
 		   <th class='th01' width='880' rowspan='2' style='text-align:center;vertical-align:middle;'>DESKRIPSI</th>
 		   <th class='th01' width='880' rowspan='2' style='text-align:center;vertical-align:middle;'>PROMO</th>
  	     <th class='th02'  width='150' rowspan='1' colspan='4' style='text-align:center;vertical-align:middle;'>KOMISI</th>
+       <th class='th01' width='100' rowspan='2' style='text-align:center;vertical-align:middle;'>BERAT ( GRAM )</th>
+       <th class='th01' width='50' rowspan='2' style='text-align:center;vertical-align:middle;'>MEDIA</th>
 	   </tr>
      </tr>
       <th class='th01' width='100' style='text-align:center;vertical-align:middle;'>GUEST</th>
@@ -677,6 +766,14 @@ class refProdukObj extends configClass
         $Koloms[] = array(
           'align="right" valign="middle"',
           $this->numberFormat($arrayDataKomisi[3]->komisi)
+        );
+        $Koloms[] = array(
+          'align="center" valign="middle"',
+          $this->numberFormat($berat)
+        );
+        $Koloms[] = array(
+          'align="center" valign="middle"',
+          "<input type='button' class='btn btn-success' onclick=$this->Prefix.showDetail($id) value='SHOW'  >"
         );
 
         return $Koloms;

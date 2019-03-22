@@ -3481,19 +3481,22 @@ function createHeaderPage($headerIco, $headerTitle,  $otherMenu='', $headerFixed
 
 
 
+		// return
+		// 	$Main->kopLaporan.
+		// 	"<table style='width:100%' border=\"0\">
+		// 	<tr>
+		// 		<td class=\"judulcetak\" align='center'>".strtoupper($this->setCetakTitle())."</td>
+		// 	</tr>
+		// 	</table>	".
+		// 	"<br>";
 		return
-			$Main->kopLaporan.
 			"<table style='width:100%' border=\"0\">
 			<tr>
 				<td class=\"judulcetak\" align='center'>".strtoupper($this->setCetakTitle())."</td>
 			</tr>
 			</table>	".
-			/*<table width=\"100%\" border=\"0\">
-				<tr>
-					<td class=\"subjudulcetak\">".PrintSKPD2($fmSKPD, $fmUNIT, $fmSUBUNIT)."</td>
-				</tr>
-			</table>*/
 			"<br>";
+
 	}
 	//function genCetak($Mode=2, $OtherHTMLHead='', $WIDTH=30, $JUDUL=''){
 	function setCetak_footer($xls=FALSE){
@@ -3551,16 +3554,35 @@ function createHeaderPage($headerIco, $headerTitle,  $otherMenu='', $headerFixed
 			$vJABATAN2 		= "<B><span STYLE='background:none;border:none;text-align:center;font-weight:bold' size=50 >PETUGAS $this->namaModulCetak</span>";
 
 		}
+		// $Hsl = " <table style='width:$pagewidth' border=0>
+		// 			<tr>
+		// 			<td width=100 colspan='$cp1'>&nbsp;</td>
+		// 			<td align=center width=300 colspan='$cp2'>
+		// 				$vMENGETAHUI<BR>
+		// 				$vJABATAN1
+		// 				<BR><BR><BR><BR><BR><BR>
+		// 				$vNAMA1
+		// 				<br>
+		// 				$vNIP1
+		// 			</td>
+    //
+		// 			<td width=400 colspan='$cp3'>&nbsp;</td>
+		// 			<td align=center width=300 colspan='$cp4'>
+		// 				$vTITIKMANGSA<BR>
+		// 				$vJABATAN2
+		// 				<BR><BR><BR><BR><BR><BR>
+		// 				$vNAMA2
+		// 				<br>
+		// 				$vNIP2
+		// 			</td>
+		// 			<td width='*' colspan='$cp5'>&nbsp;</td>
+		// 			</tr>
+		// 		</table> ";
 		$Hsl = " <table style='width:$pagewidth' border=0>
 					<tr>
 					<td width=100 colspan='$cp1'>&nbsp;</td>
 					<td align=center width=300 colspan='$cp2'>
-						$vMENGETAHUI<BR>
-						$vJABATAN1
-						<BR><BR><BR><BR><BR><BR>
-						$vNAMA1
-						<br>
-						$vNIP1
+
 					</td>
 
 					<td width=400 colspan='$cp3'>&nbsp;</td>
@@ -3569,8 +3591,6 @@ function createHeaderPage($headerIco, $headerTitle,  $otherMenu='', $headerFixed
 						$vJABATAN2
 						<BR><BR><BR><BR><BR><BR>
 						$vNAMA2
-						<br>
-						$vNIP2
 					</td>
 					<td width='*' colspan='$cp5'>&nbsp;</td>
 					</tr>

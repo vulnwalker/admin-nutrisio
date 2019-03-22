@@ -66,6 +66,17 @@ if (CekLogin () == false){
 				}
 				break;
 			}
+			case 'pembayaranKomisi':{
+				if (CekLogin()) {  setLastAktif();
+					include('common/daftarobj.php');
+					include('common/configClass.php');
+					include("pages/pembayaranKomisi/pembayaranKomisi.php"); //break;
+					$pembayaranKomisi->selector();
+				}else{
+					header("Location:index.php?");//header("Location: http://$Main->SITE/");
+				}
+				break;
+			}
 	}
 
 	ob_flush();

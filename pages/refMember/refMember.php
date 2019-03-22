@@ -104,7 +104,7 @@ class refMemberObj extends configClass
             $dataInsert  = array(
                 'nama' => $namaMember,
                 'email' => $emailMember,
-                'password' => $passwordMember,
+                'password' => password_hash($passwordMember,PASSWORD_BCRYPT),
                 'komisi' => $komisiMember,
                 'nama_bank' => $namaBank,
                 'nomor_rekening' => $nomorRekening,
@@ -173,7 +173,7 @@ class refMemberObj extends configClass
 						$dataUpdate  = array(
                 'nama' => $namaMember,
                 'email' => $emailMember,
-                'password' => $passwordMember,
+                'password' => password_hash($passwordMember,PASSWORD_BCRYPT),
                 'komisi' => $komisiMember,
                 'nama_bank' => $namaBank,
                 'nomor_rekening' => $nomorRekening,

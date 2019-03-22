@@ -320,7 +320,7 @@ class penjualanProdukObj extends configClass
                       ;
             $dataMemberBaru = array(
               'email' => $getDataPenjualan['email_pembeli'],
-              'password' => str_replace(" ","","$ 2y$ 10$ UYv3PqUoygt59viJIHm0t.xFk3RA7u/3TirEONosL5rHrYHoerdDy"),
+              'password' => password_hash("123456",PASSWORD_BCRYPT),
               'nama' => $getDataPenjualan['nama_pembeli'],
               'alamat' => $alamatPembeli,
               'nomor_telepon' => $getDataPenjualan['nomor_telepon'],
@@ -387,7 +387,7 @@ class penjualanProdukObj extends configClass
               $dataKomisiMemberDirect = array(
                 'id_penjualan' => $idPenjualan,
                 'komisi' => $getDataProduk['harga'] - $getDataProduk['harga_member'],
-                'jenis_komisi' => "PENJUALAN",
+                'jenis_komisi' => "REKRUT",
                 'id_member' => $getDataPenjualan['id_member'] ,
                 'tanggal' => date("Y-m-d"),
               );
@@ -490,6 +490,7 @@ class penjualanProdukObj extends configClass
           sqlQuery($queryInsertMember);
         }
         sqlQuery("UPDATE penjualan set status = 'SUKSES', id_admin='".$this->userName."' where id = '$idPenjualan'");
+        sqlQuery("DELETE FROM trafic where id = '".$getDataPenjualan['id_trafic']."'");
       }
       return array(
           'cek' => $cek,
@@ -546,6 +547,11 @@ class penjualanProdukObj extends configClass
                 'label' => 'Email',
                 'labelWidth' => 150,
                 'value' => "<input type='text' class='form-control'  value='$email_pembeli' readonly >"
+            ),
+            'servicePengiriman' => array(
+                'label' => 'Status',
+                'labelWidth' => 150,
+                'value' => "<input type='text' class='form-control'  value='$service_pengiriman' readonly >"
             ),
             'status' => array(
                 'label' => 'Status',
@@ -678,6 +684,7 @@ class penjualanProdukObj extends configClass
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>SUB TOTAL</th>
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>ONGKIR</th>
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>TOTAL</th>
+     	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>SERVICE</th>
      	     <th class='th01'  width='50'  style='text-align:center;vertical-align:middle;'>STATUS</th>
     	   </tr>
 	        </thead>";
@@ -743,6 +750,10 @@ class penjualanProdukObj extends configClass
         $Koloms[] = array(
           'align="right" valign="middle"',
           $this->numberFormat($total)
+        );
+        $Koloms[] = array(
+          'align="center" valign="middle"',
+          $service_pengiriman
         );
         $Koloms[] = array(
           'align="center" valign="middle"',

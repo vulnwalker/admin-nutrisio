@@ -68,9 +68,9 @@ $Main->Base =
             </div>
 
 						<div class='tiles-grid tiles-group size-2 fg-white'>
-                <a href='pages.php?Pg=pinjamanSaldo' data-role='tile' data-size='wide' class='bg-emerald fg-white'>
+                <a href='pages.php?Pg=pembayaranKomisi' data-role='tile' data-size='wide' class='bg-emerald fg-white'>
                     <img class='icon' src='assets/images/pinjaman 2nd.png' alt=''>
-                    <span class='branding-bar'>PINJAMAN</span>
+                    <span class='branding-bar'>PEMBAYARAN KOMISI</span>
                 </a>
                 <a href='pages.php?Pg=bukuUmum' data-role='tile' class='bg-cyan fg-white'>
                     <img class='icon' src='assets/images/buku kas umum.png' alt=''>
