@@ -214,6 +214,14 @@ class penjualanProdukObj extends configClass
 
         switch ($tipe) {
 
+            case 'saveKonfirmasi': {
+                $fm      = $this->saveKonfirmasi();
+                $cek     = $fm['cek'];
+                $err     = $fm['err'];
+                $content = $fm['content'];
+                break;
+            }
+
             case 'Konfirmasi': {
                 $fm      = $this->Konfirmasi();
                 $cek     = $fm['cek'];
@@ -289,44 +297,204 @@ class penjualanProdukObj extends configClass
 
 
 
-    function Konfirmasi(){
+    function saveKonfirmasi(){
       $err = "";
       $cek = "";
       $content = array();
-      $idEdit = $_REQUEST[$this->Prefix . '_cb'];
-      $idPenjualan = $idEdit[0];
+      foreach ($_REQUEST as $key => $value) {
+          $$key = $value;
+      }
       $getDataPenjualan = sqlArray(sqlQuery("select * from $this->TblName where id = '" . $idPenjualan . "'"));
       if($getDataPenjualan['status'] == "SUKSES"){
         $err = "Penjualan sudah terkonfirmasi !";
       }
       if(empty($err)){
-        if(!empty($getDataPenjualan['id_member'])){
-          $getDataMember = sqlArray(sqlQuery("select * from users where id ='".$getDataPenjualan['id_member']."'"));
-          $decodeUplineInvitor = json_decode($getDataMember['upline']);
-          $arrayUplineNewMember = array(
-            array(
-              "LEVEL1" => $decodeUplineInvitor[1]->LEVEL2,
-            ),
-            array(
-              "LEVEL2" => $decodeUplineInvitor[2]->LEVEL3,
-            ),
-            array(
-              "LEVEL3" => $decodeUplineInvitor[3]->LEVEL4,
-            ),
-            array(
-              "LEVEL4" => $getDataPenjualan['id_member'],
-            )
-          );
-          if($getDataMember['email'] != $getDataPenjualan['email_pembeli']){
+        if($statusPenjualan == "SUKSES"){
+          if(!empty($getDataPenjualan['id_member'])){
+            $getDataMember = sqlArray(sqlQuery("select * from users where id ='".$getDataPenjualan['id_member']."'"));
+            $decodeUplineInvitor = json_decode($getDataMember['upline']);
+            $arrayUplineNewMember = array(
+              array(
+                "LEVEL1" => $decodeUplineInvitor[1]->LEVEL2,
+              ),
+              array(
+                "LEVEL2" => $decodeUplineInvitor[2]->LEVEL3,
+              ),
+              array(
+                "LEVEL3" => $decodeUplineInvitor[3]->LEVEL4,
+              ),
+              array(
+                "LEVEL4" => $getDataPenjualan['id_member'],
+              )
+            );
+            if($getDataMember['email'] != $getDataPenjualan['email_pembeli']){
+              $alamatPembeli = $getDataPenjualan['alamat_pengiriman']."\n".
+                        $getDataPenjualan['kecamatan_pengiriman']." <br>".
+                        $getDataPenjualan['kota_pengiriman']." <br>".
+                        $getDataPenjualan['provinsi_pengiriman']." <br>".
+                        $getDataPenjualan['kode_pos_pengiriman'];
+                        ;
+              $dataMemberBaru = array(
+                'email' => $getDataPenjualan['email_pembeli'],
+                'password' => password_hash("123456",PASSWORD_BCRYPT),
+                'nama' => $getDataPenjualan['nama_pembeli'],
+                'alamat' => $alamatPembeli,
+                'nomor_telepon' => $getDataPenjualan['nomor_telepon'],
+                'tanggal_join' => date("Y-m-d"),
+                'status' => "PREMIUM",
+                'upline' => json_encode($arrayUplineNewMember,JSON_PRETTY_PRINT),
+              );
+              $queryInsertMember = sqlInsert("users",$dataMemberBaru);
+              sqlQuery($queryInsertMember);
+
+              //PENENTUAN KOMISI
+              $arrayBagiKomisi = array();
+              $getDetailPenjualan = sqlQuery("select * from detail_penjualan where id_penjualan = '$idPenjualan'");
+              while ($dataDetailPenjualan = sqlArray($getDetailPenjualan)) {
+                $getDataProduk = sqlArray(sqlQuery("select * from produk where id = '".$dataDetailPenjualan['id_produk']."'"));
+                $arrayKomisiProduk = json_decode($getDataProduk['komisi']);
+                $arrayBagiKomisi[] = array(
+                  "komisiLevel1" =>  $arrayKomisiProduk[0]->komisi * $dataDetailPenjualan['jumlah'],
+                  "komisiLevel2" =>  $arrayKomisiProduk[1]->komisi * $dataDetailPenjualan['jumlah'],
+                  "komisiLevel3" =>  $arrayKomisiProduk[2]->komisi * $dataDetailPenjualan['jumlah'],
+                  "komisiLevel4" =>  $arrayKomisiProduk[3]->komisi * $dataDetailPenjualan['jumlah'],
+                );
+              }
+
+              if(!empty(sizeof($arrayBagiKomisi))){
+                for ($i=0; $i < sizeof($arrayBagiKomisi); $i++) {
+                  $totalKomisiLevel1 += $arrayBagiKomisi[$i]['komisiLevel1'];
+                  $totalKomisiLevel2 += $arrayBagiKomisi[$i]['komisiLevel2'];
+                  $totalKomisiLevel3 += $arrayBagiKomisi[$i]['komisiLevel3'];
+                  $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
+                }
+                $dataKomisiMemberLevel1 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel1,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[0]->LEVEL1,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel1,$decodeUplineInvitor[0]->LEVEL1);
+                $dataKomisiMemberLevel2 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel2,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[1]->LEVEL2,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel2,$decodeUplineInvitor[1]->LEVEL2);
+                $dataKomisiMemberLevel3 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel3,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[2]->LEVEL3,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel3,$decodeUplineInvitor[2]->LEVEL3);
+                $dataKomisiMemberLevel4 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel4,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[3]->LEVEL4 ,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel4,$decodeUplineInvitor[3]->LEVEL4);
+                $dataKomisiMemberDirect = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $getDataProduk['harga'] - $getDataProduk['harga_member'],
+                  'jenis_komisi' => "REKRUT",
+                  'id_member' => $getDataPenjualan['id_member'] ,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberDirect,$getDataPenjualan['id_member']);
+              }
+
+            }else{
+              //Repeat Order Member Lama
+              //PENENTUAN KOMISI
+              $arrayBagiKomisi = array();
+              $getDetailPenjualan = sqlQuery("select * from detail_penjualan where id_penjualan = '$idPenjualan'");
+              while ($dataDetailPenjualan = sqlArray($getDetailPenjualan)) {
+                $getDataProduk = sqlArray(sqlQuery("select * from produk where id = '".$dataDetailPenjualan['id_produk']."'"));
+                $arrayKomisiProduk = json_decode($getDataProduk['komisi']);
+                $arrayBagiKomisi[] = array(
+                  "komisiLevel1" =>  $arrayKomisiProduk[0]->komisi * $dataDetailPenjualan['jumlah'],
+                  "komisiLevel2" =>  $arrayKomisiProduk[1]->komisi * $dataDetailPenjualan['jumlah'],
+                  "komisiLevel3" =>  $arrayKomisiProduk[2]->komisi * $dataDetailPenjualan['jumlah'],
+                  "komisiLevel4" =>  $arrayKomisiProduk[3]->komisi * $dataDetailPenjualan['jumlah'],
+                );
+              }
+
+              if(!empty(sizeof($arrayBagiKomisi))){
+                for ($i=0; $i < sizeof($arrayBagiKomisi); $i++) {
+                  $totalKomisiLevel1 += $arrayBagiKomisi[$i]['komisiLevel1'];
+                  $totalKomisiLevel2 += $arrayBagiKomisi[$i]['komisiLevel2'];
+                  $totalKomisiLevel3 += $arrayBagiKomisi[$i]['komisiLevel3'];
+                  $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
+                }
+                $dataKomisiMemberLevel1 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel1,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[0]->LEVEL1,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel1,$decodeUplineInvitor[0]->LEVEL1);
+                $dataKomisiMemberLevel2 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel2,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[1]->LEVEL2,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel2,$decodeUplineInvitor[1]->LEVEL2);
+                $dataKomisiMemberLevel3 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel3,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[2]->LEVEL3,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel3,$decodeUplineInvitor[2]->LEVEL3);
+                $dataKomisiMemberLevel4 = array(
+                  'id_penjualan' => $idPenjualan,
+                  'komisi' => $totalKomisiLevel4,
+                  'jenis_komisi' => "PENJUALAN",
+                  'id_member' => $decodeUplineInvitor[3]->LEVEL4 ,
+                  'tanggal' => date("Y-m-d"),
+                );
+                $this->insertKomisi($dataKomisiMemberLevel4,$decodeUplineInvitor[3]->LEVEL4);
+              }
+
+            }
+          }else{
+            //Yatim piatu
+            //Insert MEMBER
+            $arrayUplineNewMember = array(
+              array(
+                "LEVEL1" => "0",
+              ),
+              array(
+                "LEVEL2" => "0",
+              ),
+              array(
+                "LEVEL3" => "0",
+              ),
+              array(
+                "LEVEL4" => "0",
+              )
+            );
             $alamatPembeli = $getDataPenjualan['alamat_pengiriman']."\n".
                       $getDataPenjualan['kecamatan_pengiriman']." <br>".
                       $getDataPenjualan['kota_pengiriman']." <br>".
                       $getDataPenjualan['provinsi_pengiriman']." <br>".
                       $getDataPenjualan['kode_pos_pengiriman'];
                       ;
+
             $dataMemberBaru = array(
               'email' => $getDataPenjualan['email_pembeli'],
-              'password' => password_hash("123456",PASSWORD_BCRYPT),
+              'password' => str_replace(" ","","$ 2y$ 10$ UYv3PqUoygt59viJIHm0t.xFk3RA7u/3TirEONosL5rHrYHoerdDy"),
               'nama' => $getDataPenjualan['nama_pembeli'],
               'alamat' => $alamatPembeli,
               'nomor_telepon' => $getDataPenjualan['nomor_telepon'],
@@ -336,167 +504,12 @@ class penjualanProdukObj extends configClass
             );
             $queryInsertMember = sqlInsert("users",$dataMemberBaru);
             sqlQuery($queryInsertMember);
-
-            //PENENTUAN KOMISI
-            $arrayBagiKomisi = array();
-            $getDetailPenjualan = sqlQuery("select * from detail_penjualan where id_penjualan = '$idPenjualan'");
-            while ($dataDetailPenjualan = sqlArray($getDetailPenjualan)) {
-              $getDataProduk = sqlArray(sqlQuery("select * from produk where id = '".$dataDetailPenjualan['id_produk']."'"));
-              $arrayKomisiProduk = json_decode($getDataProduk['komisi']);
-              $arrayBagiKomisi[] = array(
-                "komisiLevel1" =>  $arrayKomisiProduk[0]->komisi * $dataDetailPenjualan['jumlah'],
-                "komisiLevel2" =>  $arrayKomisiProduk[1]->komisi * $dataDetailPenjualan['jumlah'],
-                "komisiLevel3" =>  $arrayKomisiProduk[2]->komisi * $dataDetailPenjualan['jumlah'],
-                "komisiLevel4" =>  $arrayKomisiProduk[3]->komisi * $dataDetailPenjualan['jumlah'],
-              );
-            }
-
-            if(!empty(sizeof($arrayBagiKomisi))){
-              for ($i=0; $i < sizeof($arrayBagiKomisi); $i++) {
-                $totalKomisiLevel1 += $arrayBagiKomisi[$i]['komisiLevel1'];
-                $totalKomisiLevel2 += $arrayBagiKomisi[$i]['komisiLevel2'];
-                $totalKomisiLevel3 += $arrayBagiKomisi[$i]['komisiLevel3'];
-                $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
-              }
-              $dataKomisiMemberLevel1 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel1,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[0]->LEVEL1,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel1,$decodeUplineInvitor[0]->LEVEL1);
-              $dataKomisiMemberLevel2 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel2,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[1]->LEVEL2,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel2,$decodeUplineInvitor[1]->LEVEL2);
-              $dataKomisiMemberLevel3 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel3,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[2]->LEVEL3,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel3,$decodeUplineInvitor[2]->LEVEL3);
-              $dataKomisiMemberLevel4 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel4,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[3]->LEVEL4 ,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel4,$decodeUplineInvitor[3]->LEVEL4);
-              $dataKomisiMemberDirect = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $getDataProduk['harga'] - $getDataProduk['harga_member'],
-                'jenis_komisi' => "REKRUT",
-                'id_member' => $getDataPenjualan['id_member'] ,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberDirect,$getDataPenjualan['id_member']);
-            }
-
-          }else{
-            //Repeat Order Member Lama
-            //PENENTUAN KOMISI
-            $arrayBagiKomisi = array();
-            $getDetailPenjualan = sqlQuery("select * from detail_penjualan where id_penjualan = '$idPenjualan'");
-            while ($dataDetailPenjualan = sqlArray($getDetailPenjualan)) {
-              $getDataProduk = sqlArray(sqlQuery("select * from produk where id = '".$dataDetailPenjualan['id_produk']."'"));
-              $arrayKomisiProduk = json_decode($getDataProduk['komisi']);
-              $arrayBagiKomisi[] = array(
-                "komisiLevel1" =>  $arrayKomisiProduk[0]->komisi * $dataDetailPenjualan['jumlah'],
-                "komisiLevel2" =>  $arrayKomisiProduk[1]->komisi * $dataDetailPenjualan['jumlah'],
-                "komisiLevel3" =>  $arrayKomisiProduk[2]->komisi * $dataDetailPenjualan['jumlah'],
-                "komisiLevel4" =>  $arrayKomisiProduk[3]->komisi * $dataDetailPenjualan['jumlah'],
-              );
-            }
-
-            if(!empty(sizeof($arrayBagiKomisi))){
-              for ($i=0; $i < sizeof($arrayBagiKomisi); $i++) {
-                $totalKomisiLevel1 += $arrayBagiKomisi[$i]['komisiLevel1'];
-                $totalKomisiLevel2 += $arrayBagiKomisi[$i]['komisiLevel2'];
-                $totalKomisiLevel3 += $arrayBagiKomisi[$i]['komisiLevel3'];
-                $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
-              }
-              $dataKomisiMemberLevel1 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel1,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[0]->LEVEL1,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel1,$decodeUplineInvitor[0]->LEVEL1);
-              $dataKomisiMemberLevel2 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel2,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[1]->LEVEL2,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel2,$decodeUplineInvitor[1]->LEVEL2);
-              $dataKomisiMemberLevel3 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel3,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[2]->LEVEL3,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel3,$decodeUplineInvitor[2]->LEVEL3);
-              $dataKomisiMemberLevel4 = array(
-                'id_penjualan' => $idPenjualan,
-                'komisi' => $totalKomisiLevel4,
-                'jenis_komisi' => "PENJUALAN",
-                'id_member' => $decodeUplineInvitor[3]->LEVEL4 ,
-                'tanggal' => date("Y-m-d"),
-              );
-              $this->insertKomisi($dataKomisiMemberLevel4,$decodeUplineInvitor[3]->LEVEL4);
-            }
-
           }
+          sqlQuery("UPDATE penjualan set status = 'SUKSES', id_admin='".$this->userName."' where id = '$idPenjualan'");
+          sqlQuery("DELETE FROM trafic where id = '".$getDataPenjualan['id_trafic']."'");
         }else{
-          //Yatim piatu
-          //Insert MEMBER
-          $arrayUplineNewMember = array(
-            array(
-              "LEVEL1" => "0",
-            ),
-            array(
-              "LEVEL2" => "0",
-            ),
-            array(
-              "LEVEL3" => "0",
-            ),
-            array(
-              "LEVEL4" => "0",
-            )
-          );
-          $alamatPembeli = $getDataPenjualan['alamat_pengiriman']."\n".
-                    $getDataPenjualan['kecamatan_pengiriman']." <br>".
-                    $getDataPenjualan['kota_pengiriman']." <br>".
-                    $getDataPenjualan['provinsi_pengiriman']." <br>".
-                    $getDataPenjualan['kode_pos_pengiriman'];
-                    ;
-
-          $dataMemberBaru = array(
-            'email' => $getDataPenjualan['email_pembeli'],
-            'password' => str_replace(" ","","$ 2y$ 10$ UYv3PqUoygt59viJIHm0t.xFk3RA7u/3TirEONosL5rHrYHoerdDy"),
-            'nama' => $getDataPenjualan['nama_pembeli'],
-            'alamat' => $alamatPembeli,
-            'nomor_telepon' => $getDataPenjualan['nomor_telepon'],
-            'tanggal_join' => date("Y-m-d"),
-            'status' => "PREMIUM",
-            'upline' => json_encode($arrayUplineNewMember,JSON_PRETTY_PRINT),
-          );
-          $queryInsertMember = sqlInsert("users",$dataMemberBaru);
-          sqlQuery($queryInsertMember);
+          sqlQuery("UPDATE penjualan set status = '$statusPenjualan', id_admin='".$this->userName."' where id = '$idPenjualan'");
         }
-        sqlQuery("UPDATE penjualan set status = 'SUKSES', id_admin='".$this->userName."' where id = '$idPenjualan'");
-        sqlQuery("DELETE FROM trafic where id = '".$getDataPenjualan['id_trafic']."'");
       }
       return array(
           'cek' => $cek,
@@ -576,6 +589,89 @@ class penjualanProdukObj extends configClass
         $this->form_menubawah ="<input type='button' class='btn btn-success' value='Tutup' onclick ='" . $this->Prefix .".Close()' >";
 
         $form    = $this->genForm2();
+        $content = $form; //$content = 'content';
+        return array(
+            'cek' => $cek,
+            'err' => $err,
+            'content' => $content
+        );
+    }
+    function Konfirmasi()
+    {
+        $cek                = '';
+        $err                = '';
+        $content            = '';
+        $json               = TRUE; //$ErrMsg = 'tes';
+        $form_name          = $this->Prefix . '_form';
+        $this->form_width   = 600;
+        $this->form_height  = 400;
+        $this->form_caption = 'Konfirmasi';
+        $idEdit             = $_REQUEST[$this->Prefix . '_cb'];
+        $getData            = sqlArray(sqlQuery("select * from $this->TblName where id = '" . $idEdit[0] . "'"));
+        foreach ($getData as $key => $value) {
+            $$key = $value;
+        }
+        $alamat = $alamat_pengiriman."\n".
+                  $kecamatan_pengiriman."\n".
+                  $kota_pengiriman."\n".
+                  $provinsi_pengiriman."\n".
+                  $kode_pos_pengiriman;
+                  ;
+        $arrayStatus = array(
+          array("PENDING","PENDING"),
+          array("PAID","PAID"),
+          array("DELIVERY","DELIVERY"),
+          array("SUKSES","SUKSES"),
+        );
+        $this->form_fields    = array(
+
+            'noOrder' => array(
+                'label' => 'Nomor Order',
+                'labelWidth' => 150,
+                'value' => "<input type='text' class='form-control'  value='$id' readonly >"
+            ),
+            'tanggalOrder' => array(
+                'label' => 'Tanggal Order',
+                'labelWidth' => 150,
+                'value' => "<input type='text' class='form-control'  value='".$this->generateDate($tanggal)."' readonly >"
+            ),
+            'namaPembeli' => array(
+                'label' => 'Nama Pembeli',
+                'labelWidth' => 150,
+                'value' => "<input type='text' class='form-control'  value='$nama_pembeli' readonly >"
+            ),
+            'alamatPembeli' => array(
+                'label' => 'Alamat',
+                'labelWidth' => 150,
+                'value' => "<textarea type='text' class='form-control' rows='7' readonly >$alamat</textarea>"
+            ),
+            'emailPembeli' => array(
+                'label' => 'Email',
+                'labelWidth' => 150,
+                'value' => "<input type='text' class='form-control'  value='$email_pembeli' readonly >"
+            ),
+            'servicePengiriman' => array(
+                'label' => 'Service Pengiriman',
+                'labelWidth' => 150,
+                'value' => "<input type='text' class='form-control'  value='$service_pengiriman' readonly >"
+            ),
+            'status' => array(
+                'label' => 'Status',
+                'labelWidth' => 150,
+                'value' => cmbArray('statusPenjualan', $status, $arrayStatus, '-- STATUS --', "")
+            ),
+
+
+        );
+        //tombol
+        $this->form_menubawah =
+
+        "<input type='button' class='btn btn-success' value='Simpan' onclick ='" . $this->Prefix .".saveKonfirmasi(".$idEdit[0].")' > ".
+        "<input type='button' class='btn btn-success' value='Tutup' onclick ='" . $this->Prefix .".Close()' >"
+
+        ;
+
+        $form    = $this->genForm();
         $content = $form; //$content = 'content';
         return array(
             'cek' => $cek,

@@ -92,7 +92,7 @@ $Main->Base =
                 </div>
 
                 <div class='tile purple title-scaleup icon-scaledownrotate360cw w2 h2'>
-                    <a class='link' data-scroll='scrollto'  href='pages.php?Pg=produk'>
+                    <a class='link'   href='pages.php?Pg=refProduk'>
                         <i class='fas fa-flask'></i>
                         <p class='title'>Produk</p>
                     </a>

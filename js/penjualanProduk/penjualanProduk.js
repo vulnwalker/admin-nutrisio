@@ -104,31 +104,52 @@ var penjualanProduk = new DaftarObj2({
     var me = this;
     errmsg = this.CekCheckbox();
     if (errmsg == "") {
-      if(confirm('Konfirmasi order ?')){
-        var box = this.GetCbxChecked();
-        var cover = this.prefix + "_formcover";
-        addCoverPage2(cover, 999, true, false);
-        document.body.style.overflow = "hidden";
-        $.ajax({
-          type: "POST",
-          data: $("#" + this.formName).serialize(),
-          url: this.url + "&tipe=Konfirmasi",
-          success: function(data) {
+      var box = this.GetCbxChecked();
+
+      var cover = this.prefix + "_formcover";
+      addCoverPage2(cover, 999, true, false);
+      document.body.style.overflow = "hidden";
+      $.ajax({
+        type: "POST",
+        data: $("#" + this.formName).serialize(),
+        url: this.url + "&tipe=Konfirmasi",
+        success: function(data) {
+          var resp = eval("(" + data + ")");
+          if (resp.err == "") {
+            document.getElementById(cover).innerHTML = resp.content;
+            me.AfterFormEdit(resp);
+          } else {
+            alert(resp.err);
             delElem(cover);
-            var resp = eval("(" + data + ")");
-            if (resp.err == "") {
-              alert("Konfirmasi Sukses");
-              me.refreshList();
-            } else {
-              alert(resp.err);
-              document.body.style.overflow = "auto";
-            }
+            document.body.style.overflow = "auto";
           }
-        });
-      }
+        }
+      });
     } else {
       alert(errmsg);
     }
+  },
+  saveKonfirmasi: function(idPenjualan) {
+    var me = this;
+    this.OnErrorClose = false;
+    document.body.style.overflow = "hidden";
+    var cover = this.prefix + "_formsimpan";
+    addCoverPage2(cover, 999999, true, false);
+    $.ajax({
+      type: "POST",
+      data: $("#" + this.prefix + "_form").serialize()+"&idPenjualan="+idPenjualan,
+      url: this.url + "&tipe=saveKonfirmasi",
+      success: function(data) {
+        var resp = eval("(" + data + ")");
+        delElem(cover);
+        if (resp.err == "") {
+          me.Close();
+          me.refreshList();
+        } else {
+          alert(resp.err);
+        }
+      }
+    });
   },
   saveNew: function() {
     var me = this;

@@ -500,54 +500,29 @@ class refArtikelObj extends configClass
         }
         $arrayStatus = array(
             array(
-                'PREMIUM',
-                'PREMIUM'
+                'AKTIF','AKTIF',
+
             ),
+            array(
+              'TIDAK AKTIF','TIDAK AKTIF',
+            )
         );
         if (empty($jumlahData))
         $jumlahData = 50;
         $comboFilterstatusArtikel = cmbArray('filterStatus', $filterStatus, $arrayStatus, '-- STATUS --', "onchange=$this->Prefix.refreshList(true)");
         $TampilOpt         = "<div class='FilterBar' style='margin-top:5px;'>" . "<table style='width:100%'>
 				<tr>
-					<td>NAMA</td>
+					<td>JUDUL</td>
 					<td>:</td>
 					<td style='width:86%;'>
-						<input type='text' class='form-control' name='filterNama' id ='filterNama' style='width:400px;' value='$filterNama'>
+						<input type='text' class='form-control' name='filterJudul' id ='filterJudul' style='width:400px;' value='$filterJudul'>
 					</td>
 				</tr>
 				<tr>
-					<td>NAMA BANK</td>
+					<td>TANGGAL </td>
 					<td>:</td>
 					<td style='width:86%;'>
-						<input type='text' class='form-control' name='filterNamaBank' id ='filterNamaBank' style='width:400px;' value='$filterNamaBank'>
-					</td>
-				</tr>
-				<tr>
-					<td>EMAIL</td>
-					<td>:</td>
-					<td style='width:86%;'>
-						<input type='text' class='form-control' name='filterEmail' id ='filterEmail' style='width:400px;' value='$filterEmail'>
-					</td>
-				</tr>
-				<tr>
-					<td>ALAMAT</td>
-					<td>:</td>
-					<td style='width:86%;'>
-						<input type='text' class='form-control' name='filterAlamat' id ='filterAlamat' style='width:400px;' value='$filterAlamat'>
-					</td>
-				</tr>
-				<tr>
-					<td>NOMOR TELEPON</td>
-					<td>:</td>
-					<td style='width:86%;'>
-						<input type='text' class='form-control' name='filterNomorTelepon' id ='filterNomorTelepon' style='width:400px;' value='$filterNomorTelepon'>
-					</td>
-				</tr>
-				<tr>
-					<td>TANGGAL JOIN</td>
-					<td>:</td>
-					<td style='width:86%;'>
-						<input type='text' class='form-control' name='filterTanggalJoin' id ='filterTanggalJoin' style='width:400px;' value='$filterTanggalJoin'>
+						<input type='text' class='form-control' name='filterTanggal' id ='filterTanggal' style='width:400px;' value='$filterTanggal'>
 					</td>
 				</tr>
 				<tr>
@@ -588,26 +563,14 @@ class refArtikelObj extends configClass
             $$key = $value;
         }
         $arrKondisi = array();
-        if (!empty($filterNama)) {
-            $arrKondisi[] = "nama like '%$filterNama%'";
-        }
-        if (!empty($filterNamaBank)) {
-            $arrKondisi[] = "nama_bank like '%$filterNamaBank%'";
-        }
-        if (!empty($filterEmail)) {
-            $arrKondisi[] = "email like '%$filterEmail%'";
-        }
-        if (!empty($filterAlamat)) {
-            $arrKondisi[] = "alamat like '%$filterAlamat%'";
-        }
-        if (!empty($filterNomorTelepon)) {
-            $arrKondisi[] = "nomor_telepon like '%$filterNomorTelepon%'";
+        if (!empty($filterJudul)) {
+            $arrKondisi[] = "judul like '%$filterJudul%'";
         }
         if (!empty($filterStatus)) {
-            $arrKondisi[] = "status like '%$filterStatus%'";
+            $arrKondisi[] = "status = '$filterStatus'";
         }
-        if (!empty($filterTanggalJoin)) {
-            $arrKondisi[] = "tanggal_join like '%".$this->generateDate($filterTanggalJoin)."%'";
+        if (!empty($filterTanggal)) {
+            $arrKondisi[] = "tanggal like '%".$this->generateDate($filterTanggal)."%'";
         }
         $Kondisi = join(' and ', $arrKondisi);
         $Kondisi = $Kondisi == '' ? '' : ' Where ' . $Kondisi;

@@ -634,8 +634,8 @@ class pembayaranKomisiObj extends configClass
                 'PENDING'
             ),
             array(
-                'STATUS',
-                'STATUS'
+                'SELESAI',
+                'SELESAI'
             ),
         );
         $arrayBulan = array(
@@ -736,7 +736,11 @@ class pembayaranKomisiObj extends configClass
             $arrKondisi[] = "id_member in ( select id from users where nama like '%".$filterNamaMember."%' ) ";
         }
         if (!empty($filterStatus) && !empty($filterTahun) &&  !empty($filterBulan) ) {
+          if($filterStatus == "PENDING"){
+            $arrKondisi[] = "id_member not in ( select id_member from pembayaran_komisi where year(tanggal) ='$filterTahun' and month(tanggal) ='$filterBulan') ";
+          }elseif($filterStatus == "SELESAI"){
             $arrKondisi[] = "id_member in ( select id_member from pembayaran_komisi where year(tanggal) ='$filterTahun' and month(tanggal) ='$filterBulan') ";
+          }
         }
 
         $Kondisi = join(' and ', $arrKondisi);
