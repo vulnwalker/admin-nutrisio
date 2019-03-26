@@ -77,6 +77,17 @@ if (CekLogin () == false){
 				}
 				break;
 			}
+			case 'refGalery':{
+				if (CekLogin()) {  setLastAktif();
+					include('common/daftarobj.php');
+					include('common/configClass.php');
+					include("pages/refGalery/refGalery.php"); //break;
+					$refGalery->selector();
+				}else{
+					header("Location:index.php?");//header("Location: http://$Main->SITE/");
+				}
+				break;
+			}
 	}
 
 	ob_flush();

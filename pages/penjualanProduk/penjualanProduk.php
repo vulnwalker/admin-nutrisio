@@ -16,13 +16,13 @@ class penjualanProdukObj extends configClass
     var $FieldSum_Cp1 = array(14, 13, 13); //berdasar mode
     var $FieldSum_Cp2 = array(1, 1, 1);
     var $checkbox_rowspan = 2;
-    var $PageTitle = 'penjualanProduk';
+    var $PageTitle = 'penjualan Produk';
     var $PageIcon = 'images/administrasi_ico.png';
     var $pagePerHal = '';
     //var $cetak_xls=TRUE ;
     var $fileNameExcel = 'penjualanProduk.xls';
-    var $namaModulCetak = 'penjualanProduk';
-    var $Cetak_Judul = 'penjualanProduk';
+    var $namaModulCetak = 'ADMINISTRASI';
+    var $Cetak_Judul = 'penjualan Produk';
     var $Cetak_Mode = 2;
     var $Cetak_WIDTH = '30cm';
     var $Cetak_OtherHTMLHead;
@@ -52,6 +52,12 @@ class penjualanProdukObj extends configClass
 	    				<a class='toolbar' id='' href='javascript:$this->Prefix.Konfirmasi()' title='Konfirmasi'>
 	    					<img src='images/administrator/images/edit_f2.png' alt='button' name='save' width='22' height='22' border='0' align='middle'>
 	    					Konfirmasi
+	    				</a>
+            </li>
+            <li class='nav-item' style='margin-right: 10px;margin-left: 10px;'>
+	    				<a class='toolbar' id='' href='javascript:$this->Prefix.cetakAll()' title='Cetak'>
+	    					<img src='images/administrator/images/print.png' alt='button' name='save' width='22' height='22' border='0' align='middle'>
+	    					Cetak
 	    				</a>
             </li>
 						";
@@ -700,7 +706,7 @@ class penjualanProdukObj extends configClass
         }
         $Koloms   = array();
         $Koloms[] = array(
-            'align="center"',
+            'align="center" valign="middle"',
             $no . '.'
         );
 
@@ -710,7 +716,7 @@ class penjualanProdukObj extends configClass
                 $TampilCheckBox
             );
         $Koloms[] = array(
-            'align="center"',
+            'align="center" valign="middle"',
             $id
         );
         $Koloms[] = array(
@@ -885,6 +891,34 @@ class penjualanProdukObj extends configClass
         );
 
     }
+
+    function genRowSum($ColStyle, $Mode, $Total){
+  			foreach ($_REQUEST as $key => $value) {
+  			  	$$key = $value;
+  			 }
+        $arrayKondisi = $this->getDaftarOpsi(1);
+        $getTotal = sqlArray(sqlQuery("select sum(total) from penjualan ".$arrKondisi['Kondisi']));
+        if($tipe == 'cetak_all'){
+          $ContentTotalHal =
+    			"<tr>
+    				<td class='$ColStyle' colspan='9' align='center'><b>Total </td>
+    				<td class='GarisDaftar' align='right'>".$this->numberFormat($getTotal['sum(total)'] )."</td>
+    				<td class='GarisDaftar' align='right'></td>
+    				<td class='GarisDaftar' align='right'></td>
+    			</tr>" ;
+        }else{
+          $ContentTotalHal =
+    			"<tr>
+    				<td class='$ColStyle' colspan='10' align='center'><b>Total </td>
+    				<td class='GarisDaftar' align='right'>".$this->numberFormat($getTotal['sum(total)'] )."</td>
+    				<td class='GarisDaftar' align='right'></td>
+    				<td class='GarisDaftar' align='right'></td>
+    			</tr>" ;
+        }
+
+  			return $ContentTotalHal;
+  		}
+
 }
 $penjualanProduk = new penjualanProdukObj();
 $penjualanProduk->userName = $_COOKIE['coID'];;
