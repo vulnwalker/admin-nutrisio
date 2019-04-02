@@ -60,6 +60,12 @@ class penjualanProdukObj extends configClass
 	    					Cetak
 	    				</a>
             </li>
+            <li class='nav-item' style='margin-right: 10px;margin-left: 10px;'>
+	    				<a class='toolbar' id='' href='javascript:$this->Prefix.Invoice()' title='Invoice'>
+	    					<img src='images/administrator/images/print.png' alt='button' name='save' width='22' height='22' border='0' align='middle'>
+	    					Invoice
+	    				</a>
+            </li>
 						";
 
             // <li class='nav-item' style='margin-right: 10px;margin-left: 10px;'>

@@ -129,6 +129,35 @@ var penjualanProduk = new DaftarObj2({
       alert(errmsg);
     }
   },
+  Invoice: function() {
+    var me = this;
+    errmsg = this.CekCheckbox();
+    if (errmsg == "") {
+      var box = this.GetCbxChecked();
+
+      var cover = this.prefix + "_formcover";
+      addCoverPage2(cover, 999, true, false);
+      document.body.style.overflow = "hidden";
+      $.ajax({
+        type: "POST",
+        data: $("#" + this.formName).serialize(),
+        url: this.url + "&tipe=Invoice",
+        success: function(data) {
+          var resp = eval("(" + data + ")");
+          if (resp.err == "") {
+            document.getElementById(cover).innerHTML = resp.content;
+            me.AfterFormEdit(resp);
+          } else {
+            alert(resp.err);
+            delElem(cover);
+            document.body.style.overflow = "auto";
+          }
+        }
+      });
+    } else {
+      alert(errmsg);
+    }
+  },
   saveKonfirmasi: function(idPenjualan) {
     var me = this;
     this.OnErrorClose = false;
