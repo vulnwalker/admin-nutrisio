@@ -108,6 +108,7 @@ class refMemberObj extends configClass
                 'komisi' => $komisiMember,
                 'nama_bank' => $namaBank,
                 'nomor_rekening' => $nomorRekening,
+                'nama_rekening' => $namaRekening,
                 'nomor_telepon' => $nomorTelepon,
                 'alamat' => $alamatMember,
                 'status' => $statusMember,
@@ -165,6 +166,7 @@ class refMemberObj extends configClass
                 'komisi' => $komisiMember,
                 'nama_bank' => $namaBank,
                 'nomor_rekening' => $nomorRekening,
+                'nama_rekening' => $namaRekening,
 								'nomor_telepon' => $nomorTelepon,
                 'alamat' => $alamatMember,
                 'status' => $statusMember,
@@ -177,6 +179,7 @@ class refMemberObj extends configClass
                 'komisi' => $komisiMember,
                 'nama_bank' => $namaBank,
                 'nomor_rekening' => $nomorRekening,
+                'nama_rekening' => $namaRekening,
 								'nomor_telepon' => $nomorTelepon,
                 'alamat' => $alamatMember,
                 'status' => $statusMember,
@@ -300,13 +303,15 @@ class refMemberObj extends configClass
         $json               = TRUE; //$ErrMsg = 'tes';
         $form_name          = $this->Prefix . '_form';
         $this->form_width   = 500;
-        $this->form_height  = 320;
+        $this->form_height  = 350;
         $this->form_caption = 'Baru';
 
         $arrayStatus          = array(
             array(
-                'PREMIUM',
-                'PREMIUM'
+                'AKTIF','AKTIF'
+            ),
+            array(
+                'TIDAK AKTIF','TIDAK AKTIF'
             )
         );
         $comboStatusMember    = cmbArray('statusMember', "PREMIUM", $arrayStatus, '-- STATUS --', "");
@@ -349,6 +354,11 @@ class refMemberObj extends configClass
                     "params" => "style='float:left;'"
                 ))
             ),
+            'NAMA REKENING' => array(
+                'label' => 'Nama Rekening',
+                'labelWidth' => 100,
+                'value' => "<input type='text' name = 'namaRekening' id = 'namaRekening' class='form-control'  >"
+            ),
             'komisiMember' => array(
                 'label' => 'Komisi',
                 'labelWidth' => 100,
@@ -387,20 +397,22 @@ class refMemberObj extends configClass
         $json               = TRUE; //$ErrMsg = 'tes';
         $form_name          = $this->Prefix . '_form';
 				$this->form_width   = 500;
-        $this->form_height  = 320;
+        $this->form_height  = 350;
         $this->form_caption = 'Edit';
         $idEdit             = $_REQUEST[$this->Prefix . '_cb'];
         $getData            = sqlArray(sqlQuery("select * from $this->TblName where id = '" . $idEdit[0] . "'"));
         foreach ($getData as $key => $value) {
             $$key = $value;
         }
-				$arrayStatus          = array(
+        $arrayStatus          = array(
             array(
-                'PREMIUM',
-                'PREMIUM'
+                'AKTIF','AKTIF'
+            ),
+            array(
+                'TIDAK AKTIF','TIDAK AKTIF'
             )
         );
-        $comboStatusMember    = cmbArray('statusMember', "PREMIUM", $arrayStatus, '-- STATUS --', "");
+        $comboStatusMember    = cmbArray('statusMember', $status, $arrayStatus, '-- STATUS --', "");
         //items ----------------------
         $this->form_fields    = array(
 
@@ -441,6 +453,11 @@ class refMemberObj extends configClass
                     "params" => "style='float:left;'",
 										"value" => $nomor_rekening
                 ))
+            ),
+            'NAMA REKENING' => array(
+                'label' => 'Nama Rekening',
+                'labelWidth' => 100,
+                'value' => "<input type='text' name = 'namaRekening' id = 'namaRekening' class='form-control'  value='$nama_rekening' >"
             ),
             'komisiMember' => array(
                 'label' => 'Komisi',
@@ -538,14 +555,19 @@ class refMemberObj extends configClass
 		   <th class='th01' rowspan='2' width='200' style='text-align:center;vertical-align:middle;'>NAMA</th>
 		   <th class='th01' rowspan='2' width='150' style='text-align:center;vertical-align:middle;'>EMAIL</th>
 		   <th class='th01' rowspan='2' width='100' style='text-align:center;vertical-align:middle;'>TELEPON</th>
-		   <th class='th02' rowspan='1' colspan='2' width='200' style='text-align:center;vertical-align:middle;'>BANK</th>
-		   <th class='th01' rowspan='2' width='200' style='text-align:center;vertical-align:middle;'>KOMISI</th>
+		   <th class='th02' rowspan='1' colspan='3' width='200' style='text-align:center;vertical-align:middle;'>BANK</th>
+		   <th class='th02' rowspan='1' colspan='3' width='200' style='text-align:center;vertical-align:middle;'>RECORD</th>
+
 		   <th class='th01' rowspan='2' width='70' style='text-align:center;vertical-align:middle;'>TANGGAL JOIN</th>
 		   <th class='th01' rowspan='2' width='50' style='text-align:center;vertical-align:middle;'>STATUS</th>
 	   </tr>
 		 <tr>
-			 <th class='th01' rowspan='1'  style='text-align:center;vertical-align:middle;'>NAMA</th>
+			 <th class='th01' rowspan='1'  style='text-align:center;vertical-align:middle;'>NAMA BANK</th>
 			 <th class='th01' rowspan='1'  style='text-align:center;vertical-align:middle;'>NOMOR REKENING</th>
+			 <th class='th01' rowspan='1'  style='text-align:center;vertical-align:middle;'>NAMA REKENING</th>
+			 <th class='th01' rowspan='1'  style='text-align:center;vertical-align:middle;'>TRANSAKSI</th>
+			 <th class='th01' rowspan='1'  style='text-align:center;vertical-align:middle;'>PEMBELIAN</th>
+			 <th class='th01' rowspan='1'  style='text-align:center;vertical-align:middle;'>KOMISI</th>
 		 </tr>
 	   </thead>";
 
@@ -589,6 +611,18 @@ class refMemberObj extends configClass
             $nomor_rekening
         );
         $Koloms[] = array(
+            'align="left" valign="middle"',
+            $nama_rekening
+        );
+        $Koloms[] = array(
+            'align="right" valign="middle"',
+            $this->numberFormat($jumlah_transaksi)
+        );
+        $Koloms[] = array(
+            'align="right" valign="middle"',
+            $this->numberFormat($jumlah_barang)
+        );
+        $Koloms[] = array(
             'align="right" valign="middle"',
             $this->numberFormat($komisi)
         );
@@ -619,6 +653,27 @@ class refMemberObj extends configClass
         if (empty($jumlahData))
         $jumlahData = 50;
         $comboFilterStatusMember = cmbArray('filterStatus', $filterStatus, $arrayStatus, '-- STATUS --', "onchange=$this->Prefix.refreshList(true)");
+        $arrayPeringkat = array(
+            array(
+                'KOMISI TERBANYAK','KOMISI TERBANYAK'
+            ),
+            array(
+                'PENJUALAN TERBANYAK','PENJUALAN TERBANYAK'
+            ),
+            array(
+                'TRANSAKSI TERBANYAK','TRANSAKSI TERBANYAK'
+            ),
+            array(
+                'KOMISI TERENDAH','KOMISI TERENDAH'
+            ),
+            array(
+                'PENJUALAN TERENDAH','PENJUALAN TERENDAH'
+            ),
+            array(
+                'TRANSAKSI TERENDAH','TRANSAKSI TERENDAH'
+            ),
+        );
+        $comboUrutan = cmbArray('orderPeringkat', $orderPeringkat, $arrayPeringkat, '-- URUTKAN --', "");
         $TampilOpt         = "<div class='FilterBar' style='margin-top:5px;'>" . "<table style='width:100%'>
 				<tr>
 					<td>NAMA</td>
@@ -669,6 +724,16 @@ class refMemberObj extends configClass
 						$comboFilterStatusMember
 					</td>
 				</tr>
+        <tr>
+          <td colspan='3'><hr></td>
+        </tr>
+        <tr>
+          <td> URUTKAN PERINGKAT</td>
+          <td>:</td>
+          <td style='width:86%;'>
+            $comboUrutan
+          </td>
+        </tr>
 				<tr>
 					<td>JUMLAH DATA</td>
 					<td>:</td>
@@ -729,19 +794,20 @@ class refMemberObj extends configClass
         $fmDESC1   = cekPOST('fmDESC1');
         $Asc1      = $fmDESC1 == '' ? '' : 'desc';
         $arrOrders = array();
-        switch ($filterUrut) {
-            case '1':
-                $arrOrders[] = " type_refMember $Asc1 ";
-                break;
-            case '2':
-                $arrOrders[] = " username $Asc1 ";
-                break;
-            case '3':
-                $arrOrders[] = " nama $Asc1 ";
-                break;
-            case '4':
-                $arrOrders[] = " saldo $Asc1 ";
-                break;
+        if(!empty($orderPeringkat)){
+          if($orderPeringkat == "KOMISI TERBANYAK"){
+            $arrOrders[] = "komisi desc";
+          }elseif($orderPeringkat == "PENJUALAN TERBANYAK"){
+            $arrOrders[] = "jumlah_barang desc";
+          }elseif($orderPeringkat == "KOMISI TERENDAH"){
+            $arrOrders[] = "komisi asc";
+          }elseif($orderPeringkat == "PENJUALAN TERENDAH"){
+            $arrOrders[] = "jumlah_barang asc";
+          }elseif($orderPeringkat == "TRANSAKSI TERENDAH"){
+            $arrOrders[] = "jumlah_transaksi asc";
+          }elseif($orderPeringkat == "TRANSAKSI TERBANYAK"){
+            $arrOrders[] = "jumlah_transaksi desc";
+          }
         }
         $Order        = join(',', $arrOrders);
         $OrderDefault = '';

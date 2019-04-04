@@ -220,6 +220,11 @@ class penjualanProdukObj extends configClass
 
         switch ($tipe) {
 
+            case 'Invoice':{
+              $json = FALSE;
+              $this->Invoice();
+              break;
+            }
             case 'saveKonfirmasi': {
                 $fm      = $this->saveKonfirmasi();
                 $cek     = $fm['cek'];
@@ -347,7 +352,7 @@ class penjualanProdukObj extends configClass
                 'alamat' => $alamatPembeli,
                 'nomor_telepon' => $getDataPenjualan['nomor_telepon'],
                 'tanggal_join' => date("Y-m-d"),
-                'status' => "PREMIUM",
+                'status' => "AKTIF",
                 'upline' => json_encode($arrayUplineNewMember,JSON_PRETTY_PRINT),
               );
               $queryInsertMember = sqlInsert("users",$dataMemberBaru);
@@ -364,6 +369,7 @@ class penjualanProdukObj extends configClass
                   "komisiLevel2" =>  $arrayKomisiProduk[1]->komisi * $dataDetailPenjualan['jumlah'],
                   "komisiLevel3" =>  $arrayKomisiProduk[2]->komisi * $dataDetailPenjualan['jumlah'],
                   "komisiLevel4" =>  $arrayKomisiProduk[3]->komisi * $dataDetailPenjualan['jumlah'],
+                  "jumlahProduk" =>  $dataDetailPenjualan['jumlah'],
                 );
               }
 
@@ -373,6 +379,7 @@ class penjualanProdukObj extends configClass
                   $totalKomisiLevel2 += $arrayBagiKomisi[$i]['komisiLevel2'];
                   $totalKomisiLevel3 += $arrayBagiKomisi[$i]['komisiLevel3'];
                   $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
+                  $jumlahProduk += $arrayBagiKomisi[$i]['jumlahProduk'];
                 }
                 $dataKomisiMemberLevel1 = array(
                   'id_penjualan' => $idPenjualan,
@@ -414,6 +421,21 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberDirect,$getDataPenjualan['id_member']);
+                sqlQuery("UPDATE users set jumlah_transaksi = jumlah_transaksi + 1 where id = '".$getDataPenjualan['id_member']."'");
+                $komisiMemberDirect = $getDataProduk['harga'] - $getDataProduk['harga_member'];
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$getDataPenjualan['id_member']."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $komisiMemberDirect where id_member = '".$getDataPenjualan['id_member']."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $getDataPenjualan['id_member'],
+                    "komisi" => $komisiMemberDirect,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
               }
 
             }else{
@@ -429,6 +451,7 @@ class penjualanProdukObj extends configClass
                   "komisiLevel2" =>  $arrayKomisiProduk[1]->komisi * $dataDetailPenjualan['jumlah'],
                   "komisiLevel3" =>  $arrayKomisiProduk[2]->komisi * $dataDetailPenjualan['jumlah'],
                   "komisiLevel4" =>  $arrayKomisiProduk[3]->komisi * $dataDetailPenjualan['jumlah'],
+                  "jumlahProduk" =>  $dataDetailPenjualan['jumlah'],
                 );
               }
 
@@ -438,6 +461,7 @@ class penjualanProdukObj extends configClass
                   $totalKomisiLevel2 += $arrayBagiKomisi[$i]['komisiLevel2'];
                   $totalKomisiLevel3 += $arrayBagiKomisi[$i]['komisiLevel3'];
                   $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
+                  $jumlahProduk += $arrayBagiKomisi[$i]['jumlahProduk'];
                 }
                 $dataKomisiMemberLevel1 = array(
                   'id_penjualan' => $idPenjualan,
@@ -472,7 +496,20 @@ class penjualanProdukObj extends configClass
                 );
                 $this->insertKomisi($dataKomisiMemberLevel4,$decodeUplineInvitor[3]->LEVEL4);
               }
-
+              if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$getDataPenjualan['id_member']."' and periode = '".date("Y-m")."'")) !=0 ){
+                sqlQuery("UPDATE rekap_transaksi set jumlah_penjualan = jumlah_penjualan + 1, jumlah_barang = jumlah_barang + $jumlahProduk where id_member = '".$getDataPenjualan['id_member']."' and periode = '".date("Y-m")."' ");
+              }else{
+                $dataRekapTransaksi = array(
+                  "id_member" => $getDataPenjualan['id_member'],
+                  "komisi" => 0,
+                  "jumlah_penjualan" => 1,
+                  "jumlah_barang" => $jumlahProduk,
+                  "periode" => date("Y-m"),
+                );
+                $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                sqlQuery($queryInsertRekapTransaksi);
+              }
+              sqlQuery("UPDATE users set jumlah_transaksi = jumlah_transaksi + 1, jumlah_barang = jumlah_barang + $jumlahProduk  where id = '".$getDataPenjualan['id_member']."'");
             }
           }else{
             //Yatim piatu
@@ -510,6 +547,17 @@ class penjualanProdukObj extends configClass
             );
             $queryInsertMember = sqlInsert("users",$dataMemberBaru);
             sqlQuery($queryInsertMember);
+            $getDataNewMember = sqlArray(sqlQuery("select  * from users where email = '".$getDataPenjualan['email_pembeli']."'"));
+            $dataRekapTransaksi = array(
+              "id_member" => $getDataNewMember['id'],
+              "komisi" => 0,
+              "jumlah_penjualan" => 1,
+              "jumlah_barang" => 1,
+              "periode" => date("Y-m"),
+            );
+            $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+            sqlQuery($queryInsertRekapTransaksi);
+            sqlQuery("UPDATE users set jumlah_transaksi = jumlah_transaksi + 1, jumlah_barang = jumlah_barang + 1  where id = '".$getDataNewMember['id']."'");
           }
           sqlQuery("UPDATE penjualan set status = 'SUKSES', id_admin='".$this->userName."' where id = '$idPenjualan'");
           sqlQuery("DELETE FROM trafic where id = '".$getDataPenjualan['id_trafic']."'");
@@ -517,6 +565,7 @@ class penjualanProdukObj extends configClass
           sqlQuery("UPDATE penjualan set status = '$statusPenjualan', id_admin='".$this->userName."' where id = '$idPenjualan'");
         }
       }
+      $cek = $queryInsertRekapTransaksi;
       return array(
           'cek' => $cek,
           'err' => $err,
@@ -708,7 +757,7 @@ class penjualanProdukObj extends configClass
   							<td class='GarisDaftar' align='center'>$no</a></td>
   							<td class='GarisDaftar' align='left'>$namaProduk</td>
   							<td class='GarisDaftar' align='right'>
-  								".number_format($getNamaProduk['harga'],2,',','.')."
+  								".number_format($harga,2,',','.')."
   							</td>
   							<td class='GarisDaftar' align='right'>
   								".number_format($jumlah,0,',','.')."
@@ -969,7 +1018,7 @@ class penjualanProdukObj extends configClass
         $fmDESC1   = cekPOST('fmDESC1');
         $Asc1      = $fmDESC1 == '' ? '' : 'desc';
         $arrOrders = array();
-        $arrOrders[] = " tanggal desc ";
+        $arrOrders[] = " id desc ";
         $Order        = join(',', $arrOrders);
         $OrderDefault = '';
         $Order        = $Order == '' ? $OrderDefault : ' Order By ' . $Order;
@@ -1020,6 +1069,239 @@ class penjualanProdukObj extends configClass
 
   			return $ContentTotalHal;
   		}
+
+      function Invoice(){
+        foreach ($_POST as $key => $value) {
+      	  $$key = $value;
+        }
+        $style = "<style>
+            body {
+                font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                text-align: center;
+                color: #777;
+            }
+
+            body h1 {
+                font-weight: 300;
+                margin-bottom: 0px;
+                padding-bottom: 0px;
+                color: #000;
+            }
+
+            body h3 {
+                font-weight: 300;
+                margin-top: 10px;
+                margin-bottom: 20px;
+                font-style: italic;
+                color: #555;
+            }
+
+            body a {
+                color: #06F;
+            }
+
+            .invoice-box {
+                max-width: 800px;
+                margin: auto;
+                padding: 30px;
+                border: 1px solid #eee;
+                box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+                font-size: 16px;
+                line-height: 24px;
+                font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                color: #555;
+            }
+
+            .invoice-box table {
+                width: 100%;
+                line-height: inherit;
+                text-align: left;
+            }
+
+            .invoice-box table td {
+                padding: 5px;
+                vertical-align: top;
+            }
+
+            .invoice-box table tr td:nth-child(2) {
+                text-align: right;
+            }
+
+            .invoice-box table tr.top table td {
+                padding-bottom: 20px;
+            }
+
+            .invoice-box table tr.top table td.title {
+                font-size: 45px;
+                line-height: 45px;
+                color: #333;
+            }
+
+            .invoice-box table tr.information table td {
+                padding-bottom: 40px;
+            }
+
+            .invoice-box table tr.heading td {
+                background: #eee;
+                border-bottom: 1px solid #ddd;
+                font-weight: bold;
+            }
+
+            .invoice-box table tr.details td {
+                padding-bottom: 20px;
+            }
+
+            .invoice-box table tr.item td {
+                border-bottom: 1px solid #eee;
+            }
+
+            .invoice-box table tr.item.last td {
+                border-bottom: none;
+            }
+
+            .invoice-box table tr.total td:nth-child(2) {
+                border-top: 2px solid #eee;
+                font-weight: bold;
+            }
+
+            @media only screen and (max-width: 600px) {
+                .invoice-box table tr.top table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                }
+                .invoice-box table tr.information table td {
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                }
+            }
+        </style>";
+        $idEdit             = $_REQUEST[$this->Prefix . '_cb'];
+        $idPenjualan = $idEdit[0];
+        $getDataPenjualan = sqlArray(sqlQuery("select * from penjualan where id ='$idPenjualan'"));
+        $getDataDetailPenjualan  = sqlQuery("select * from detail_penjualan where id_penjualan = '$idPenjualan'");
+        $no = 1;
+        while ($dataDetailPenjualan = sqlArray($getDataDetailPenjualan)) {
+          $getDataProduk = sqlArray(sqlQuery("select * from produk where id = '".$dataDetailPenjualan['id_produk']."'"));
+          $rowDetailPenjualan .= "
+          <tr class='item'>
+              <td style='text-align:right;'>
+                $no
+              </td>
+              <td style='text-align:left;'>
+                  ".$getDataProduk['nama_produk']."
+              </td>
+
+              <td style='text-align:right;'>
+                  ".$this->numberFormat($dataDetailPenjualan['harga'])."
+              </td>
+              <td style='text-align:right;'>
+                  ".$this->numberFormat($dataDetailPenjualan['jumlah'])."
+              </td>
+              <td style='text-align:right;'>
+                 ".$this->numberFormat($dataDetailPenjualan['total'] )."
+              </td>
+          </tr>
+
+          ";
+          $subTotal += $dataDetailPenjualan['total'];
+          $no += 1;
+        }
+
+        $rowShipment = "
+        <tr class='total'>
+            <td colspan='4' style='text-align:right;'>Shipment :</td>
+            <td>
+                 ".$this->numberFormat($getDataPenjualan['ongkir'])."
+            </td>
+        </tr>
+
+        ";
+        echo "
+
+        $style
+        <title> INVOICE </title>
+        <div class='invoice-box'>
+            <table cellpadding='0' cellspacing='0'>
+                <tbody>
+                    <tr class='top'>
+                        <td colspan='6'>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class='title'>
+                                            <img src='assets/img/logo.png' style='width:100%; max-width:300px;'>
+                                        </td>
+
+                                        <td>
+                                            Order Nomor #: $idPenjualan
+                                            <br> Tanggal : ".$this->generateDate($getDataPenjualan['tanggal'])."
+                                            <br> Pengiriman : ".$getDataPenjualan['service_pengiriman']."
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr class='information'>
+                        <td colspan='6'>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            ".$getDataPenjualan['alamat_pengiriman']."
+                                            <br> ".$getDataPenjualan['kecamatan_pengiriman']."
+                                            <br> ".$getDataPenjualan['kota_pengiriman'].", ".$getDataPenjualan['provinsi_pengiriman']." ".$getDataPenjualan['kode_pos_pengiriman']."
+                                        </td>
+
+                                        <td>
+                                            ".$getDataPenjualan['nama_pembeli'].".
+                                            <br> ".$getDataPenjualan['nomor_telepon']."
+                                            <br> ".$getDataPenjualan['email_pembeli']."
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr class='heading' >
+                        <td style='width:2%;text-align:center'>
+                            No.
+                        </td>
+                        <td  style='width:40%;text-align:center'>
+                            Produk
+                        </td>
+                        <td  style='width:15%;text-align:center'>
+                            Harga
+                        </td>
+                        <td  style='width:10%;text-align:center'>
+                            Jumlah
+                        </td>
+                        <td  style='width:20%;text-align:center'>
+                            Total
+                        </td>
+                    </tr>
+                    $rowDetailPenjualan
+                    <tr class='total'>
+                        <td colspan='4' style='text-align:right;'>Sub Total :</td>
+                        <td>
+                             ".$this->numberFormat($subTotal)."
+                        </td>
+                    </tr>
+                    $rowShipment
+                    <tr class='total'>
+                        <td colspan='4' style='text-align:right;'>Total :</td>
+                        <td>
+                             ".$this->numberFormat($subTotal + $getDataPenjualan['ongkir'])."
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        ";
+      }
 
 }
 $penjualanProduk = new penjualanProdukObj();

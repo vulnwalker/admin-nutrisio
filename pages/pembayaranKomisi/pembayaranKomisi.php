@@ -5,7 +5,7 @@ class pembayaranKomisiObj extends configClass
     var $Prefix = 'pembayaranKomisi';
     var $elCurrPage = "HalDefault";
     var $SHOW_CEK = TRUE;
-    var $TblName = 'view_rekap_komisi'; //bonus
+    var $TblName = 'rekap_transaksi'; //bonus
     var $TblName_Hapus = 'users';
     var $MaxFlush = 10;
     var $TblStyle = array('koptable', 'cetak', 'cetak'); //berdasar mode
@@ -540,15 +540,23 @@ class pembayaranKomisiObj extends configClass
         $NomorColSpan = $Mode == 1 ? 2 : 1;
         $headerTable  = "<thead>
     	   <tr>
-      	   <th class='th01'  width='5'  style='text-align:center;vertical-align:middle;'>No.</th>
+      	   <th class='th01'  width='5' rowspan='2'  style='text-align:center;vertical-align:middle;'>No.</th>
            $Checkbox
-    		   <th class='th01' width='200'  style='text-align:center;vertical-align:middle;'>NAMA</th>
-    		   <th class='th01' width='200'  style='text-align:center;vertical-align:middle;'>EMAIL</th>
-    		   <th class='th01' width='200'  style='text-align:center;vertical-align:middle;'>NAMA BANK</th>
-    		   <th class='th01' width='200'  style='text-align:center;vertical-align:middle;'>NOMOR REKENING</th>
-     	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>TOTAL</th>
-     	     <th class='th01'  width='50'  style='text-align:center;vertical-align:middle;'>STATUS</th>
+    		   <th class='th01' width='200'  rowspan='2' style='text-align:center;vertical-align:middle;'>NAMA</th>
+    		   <th class='th01' width='200'  rowspan='2' style='text-align:center;vertical-align:middle;'>EMAIL</th>
+    		   <th class='th02' width='200'  rowspan='1' colspan='3' style='text-align:center;vertical-align:middle;'>REKENING</th>
+    		   <th class='th02' width='200'  rowspan='1' colspan='3' style='text-align:center;vertical-align:middle;'>PENDAPATAN</th>
+
+     	     <th class='th01'  width='50' rowspan='2' style='text-align:center;vertical-align:middle;'>STATUS</th>
     	   </tr>
+         </tr>
+         <th class='th01' width='200'  style='text-align:center;vertical-align:middle;'>NAMA BANK</th>
+         <th class='th01' width='200'  style='text-align:center;vertical-align:middle;'>NOMOR</th>
+         <th class='th01' width='200'  style='text-align:center;vertical-align:middle;'>NAMA REKENING</th>
+         <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>TRANSAKSI</th>
+         <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>PEMBELIAN</th>
+         <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>KOMISI</th>
+         </tr>
 	        </thead>";
 
         return $headerTable;
@@ -590,22 +598,35 @@ class pembayaranKomisiObj extends configClass
             'align="left" valign="middle"',
             $getDataMember['nomor_rekening']
         );
+        $Koloms[] = array(
+            'align="left" valign="middle"',
+            $getDataMember['nama_rekening']
+        );
 
-        $arrKondisi = array();
-        if (!empty($filterTahun)) {
-            $arrKondisi[] = "year(tanggal) ='$filterTahun'";
-        }
-        if (!empty($filterBulan)) {
-            $arrKondisi[] = "month(tanggal) ='$filterBulan'";
-        }
-        if(sizeof($arrKondisi) != 0){
-          $Kondisi = "and ".join(' and ', $arrKondisi);
-        }
-        $getDataKomisi = sqlArray(sqlQuery("select sum(komisi) from komisi where id_member = '$id_member' $Kondisi "));
+        // $arrKondisi = array();
+        // if (!empty($filterTahun)) {
+        //     $arrKondisi[] = "year(tanggal) ='$filterTahun'";
+        // }
+        // if (!empty($filterBulan)) {
+        //     $arrKondisi[] = "month(tanggal) ='$filterBulan'";
+        // }
+        // if(sizeof($arrKondisi) != 0){
+        //   $Kondisi = "and ".join(' and ', $arrKondisi);
+        // }
+        // $getDataKomisi = sqlArray(sqlQuery("select sum(komisi) from komisi where id_member = '$id_member' $Kondisi "));
         $Koloms[] = array(
           'align="right" valign="middle"',
-          $this->numberFormat($getDataKomisi['sum(komisi)'])
+          $this->numberFormat($jumlah_penjualan)
         );
+        $Koloms[] = array(
+          'align="right" valign="middle"',
+          $this->numberFormat($jumlah_barang)
+        );
+        $Koloms[] = array(
+          'align="right" valign="middle"',
+          $this->numberFormat($komisi)
+        );
+
         $status = "<img src='images/administrator/images/invalid.png' width='20px' heigh='20px' />";
         if (!empty($filterTahun) && !empty($filterBulan) ) {
           $getDataPembayaran = sqlRowCount(sqlQuery("select * from pembayaran_komisi where id_member = '$id_member' $Kondisi"));
@@ -659,6 +680,21 @@ class pembayaranKomisiObj extends configClass
         if (empty($filterBulan))$filterBulan = $explodeTanggalHariIni[1];
         $comboFilterStatus = cmbArray('filterStatus', $filterStatus, $arrayStatus, '-- STATUS --', "");
         $comboFilterBulan = cmbArray('filterBulan', $filterBulan, $arrayBulan, '-- BULAN --', "");
+        $arrayPeringkat = array(
+            array(
+                'KOMISI TERBANYAK','KOMISI TERBANYAK'
+            ),
+            array(
+                'PENJUALAN TERBANYAK','PENJUALAN TERBANYAK'
+            ),
+            array(
+                'KOMISI TERENDAH','KOMISI TERENDAH'
+            ),
+            array(
+                'PENJUALAN TERENDAH','PENJUALAN TERENDAH'
+            ),
+        );
+        $comboUrutan = cmbArray('orderPeringkat', $orderPeringkat, $arrayPeringkat, '-- URUTKAN --', "");
         $TampilOpt         = "<div class='FilterBar' style='margin-top:5px;'>" . "<table style='width:100%'>
 				<tr>
 					<td>NAMA MEMBER</td>
@@ -687,6 +723,23 @@ class pembayaranKomisiObj extends configClass
 					<td style='width:86%;'>
 						$comboFilterStatus
 					</td>
+				</tr>
+				<tr>
+					<td colspan='3'><hr></td>
+				</tr>
+        <tr>
+					<td> URUTKAN PERINGKAT</td>
+          <td>:</td>
+          <td style='width:86%;'>
+            $comboUrutan
+          </td>
+				</tr>
+        <tr>
+					<td> MINIMAL PENCAIRAN</td>
+          <td>:</td>
+          <td style='width:86%;'>
+            <input type='text' class='form-control'  name='minimalPencairan' id ='minimalPencairan' style='width:200px;' value='$minimalPencairan' >
+          </td>
 				</tr>
 				<tr>
 					<td>JUMLAH DATA</td>
@@ -726,12 +779,16 @@ class pembayaranKomisiObj extends configClass
             $$key = $value;
         }
         $arrKondisi = array();
-        if (!empty($filterTahun)) {
-            $arrKondisi[] = "year(tanggal) ='$filterTahun'";
+
+        if(!isset($filterBulan)){
+          $filterTahun = date("Y");
+          $filterBulan = date("m");
         }
-        if (!empty($filterBulan)) {
-            $arrKondisi[] = "month(tanggal) ='$filterBulan'";
-        }
+        // if (!empty($filterTahun)) {
+          $filterPeriode = $filterTahun."-".$filterBulan;
+          $arrKondisi[] = "periode ='$filterPeriode'";
+        // }
+
         if (!empty($filterNamaMember)) {
             $arrKondisi[] = "id_member in ( select id from users where nama like '%".$filterNamaMember."%' ) ";
         }
@@ -743,6 +800,10 @@ class pembayaranKomisiObj extends configClass
           }
         }
 
+        if(!empty($minimalPencairan)){
+          $arrKondisi[] = "komisi > $minimalPencairan";
+        }
+
         $Kondisi = join(' and ', $arrKondisi);
         $Kondisi = $Kondisi == '' ? '' : ' Where ' . $Kondisi;
 
@@ -751,6 +812,17 @@ class pembayaranKomisiObj extends configClass
         $fmDESC1   = cekPOST('fmDESC1');
         $Asc1      = $fmDESC1 == '' ? '' : 'desc';
         $arrOrders = array();
+        if(!empty($orderPeringkat)){
+          if($orderPeringkat == "KOMISI TERBANYAK"){
+            $arrOrders[] = "komisi desc";
+          }elseif($orderPeringkat == "PENJUALAN TERBANYAK"){
+            $arrOrders[] = "jumlah_barang desc";
+          }elseif($orderPeringkat == "KOMISI TERENDAH"){
+            $arrOrders[] = "komisi asc";
+          }elseif($orderPeringkat == "PENJUALAN TERENDAH"){
+            $arrOrders[] = "jumlah_barang asc";
+          }
+        }
         $Order        = join(',', $arrOrders);
         $OrderDefault = '';
         $Order        = $Order == '' ? $OrderDefault : ' Order By ' . $Order;

@@ -133,27 +133,11 @@ var penjualanProduk = new DaftarObj2({
     var me = this;
     errmsg = this.CekCheckbox();
     if (errmsg == "") {
-      var box = this.GetCbxChecked();
-
-      var cover = this.prefix + "_formcover";
-      addCoverPage2(cover, 999, true, false);
-      document.body.style.overflow = "hidden";
-      $.ajax({
-        type: "POST",
-        data: $("#" + this.formName).serialize(),
-        url: this.url + "&tipe=Invoice",
-        success: function(data) {
-          var resp = eval("(" + data + ")");
-          if (resp.err == "") {
-            document.getElementById(cover).innerHTML = resp.content;
-            me.AfterFormEdit(resp);
-          } else {
-            alert(resp.err);
-            delElem(cover);
-            document.body.style.overflow = "auto";
-          }
-        }
-      });
+      var aForm = document.getElementById(this.prefix+"Form");
+      aForm.action = "pages.php?Pg="+this.prefix+"&tipe=Invoice";
+      aForm.target = "_blank";
+      aForm.submit();
+      aForm.target = "";
     } else {
       alert(errmsg);
     }
