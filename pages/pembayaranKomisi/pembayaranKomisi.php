@@ -55,7 +55,7 @@ class pembayaranKomisiObj extends configClass
 	    				</a>
             </li>
 						<li class='nav-item' style='margin-right: 10px;margin-left: 10px;'>
-	    				<a class='toolbar' id='' href='javascript:$this->Prefix.cetakAll()' title='Cetak'>
+	    				<a class='toolbar' id='' href='javascript:$this->Prefix.CetakDaftar()' title='Cetak'>
 	    					<img src='images/administrator/images/print.png' alt='button' name='save' width='22' height='22' border='0' align='middle'>
 	    					Cetak
 	    				</a>
@@ -192,6 +192,11 @@ class pembayaranKomisiObj extends configClass
 
         switch ($tipe) {
 
+            case 'CetakDaftar':{
+              $json = FALSE;
+              $this->CetakDaftar();
+              break;
+            }
             case 'saveKonfirmasi': {
                 $fm      = $this->saveKonfirmasi();
                 $cek     = $fm['cek'];
@@ -846,6 +851,139 @@ class pembayaranKomisiObj extends configClass
         );
 
     }
+
+    function genRowSum($ColStyle, $Mode, $Total){
+  			foreach ($_REQUEST as $key => $value) {
+  			  	$$key = $value;
+  			 }
+        $arrayKondisi = $this->getDaftarOpsi(1);
+        $getTotal = sqlArray(sqlQuery("select sum(komisi) from rekap_transaksi ".$arrKondisi['Kondisi']));
+        if($tipe == 'cetak_all'){
+          $ContentTotalHal =
+    			"<tr>
+    				<td class='$ColStyle' colspan='8' align='center'><b>Total </td>
+    				<td class='GarisDaftar' align='right'>".$this->numberFormat($getTotal['sum(komisi)'] )."</td>
+    				<td class='GarisDaftar' align='right'></td>
+    			</tr>" ;
+        }else{
+          $ContentTotalHal =
+    			"<tr>
+    				<td class='$ColStyle' colspan='9' align='center'><b>Total </td>
+    				<td class='GarisDaftar' align='right'>".$this->numberFormat($getTotal['sum(komisi)'] )."</td>
+    				<td class='GarisDaftar' align='right'></td>
+    			</tr>" ;
+        }
+
+  			return $ContentTotalHal;
+  		}
+      function CetakDaftar(){
+        foreach ($_POST as $key => $value) {
+          $$key = $value;
+        }
+        $arrayKondisi = $this->getDaftarOpsi(1);
+        $getDataPembayaran = sqlQuery("select * from rekap_transaksi ".$arrKondisi['Kondisi']);
+        $nomor = 1;
+        while ($dataPembayaran = sqlArray($getDataPembayaran)) {
+          foreach ($dataPembayaran as $key => $value) {
+              $$key = $value;
+          }
+          $getDataMember = sqlArray(sqlQuery("select * from users where id = '".$dataPembayaran['id_member']."'"));
+          $status = "<img src='images/administrator/images/invalid.png' width='20px' heigh='20px' />";
+          if (!empty($filterTahun) && !empty($filterBulan) ) {
+            $getDataPembayaran = sqlRowCount(sqlQuery("select * from pembayaran_komisi where id_member = '".$dataPembayaran['id_member']."' $Kondisi"));
+            if(!empty($getDataPembayaran)){
+              $status = "<img src='images/administrator/images/valid.png' width='20px' heigh='20px' />";
+            }
+          }
+
+          $rowPembayaranKomisi .= "
+          <tr  valign='top '>
+             <td class='GarisCetak '  align='center'>$nomor</td>
+             <td class='GarisCetak '  align='left' valign='middle'>".$getDataMember['nama']."</td>
+             <td class='GarisCetak '  align='left' valign='middle'>".$getDataMember['email']."</td>
+             <td class='GarisCetak '  align='left' valign='middle'>".$getDataMember['nama_bank']."</td>
+             <td class='GarisCetak '  align='left' valign='middle'>".$getDataMember['nomor_rekening']."</td>
+             <td class='GarisCetak '  align='left' valign='middle'>".$getDataMember['nama_rekening']."</td>
+             <td class='GarisCetak '  align='right' valign='middle'>".$this->numberFormat($dataPembayaran['jumlah_penjualan'])."</td>
+             <td class='GarisCetak '  align='right' valign='middle'>".$this->numberFormat($dataPembayaran['jumlah_barang'])."</td>
+             <td class='GarisCetak '  align='right' valign='middle'>".$this->numberFormat($dataPembayaran['komisi'])."</td>
+             <td class='GarisCetak '  align='center' valign='middle'>
+              $status
+             </td>
+          </tr>
+          ";
+          $totalKomisi += $komisi;
+          $nomor += 1;
+        }
+        echo  "
+        <html>
+        <head>
+            <title>RIZKI KITA</title>
+            <link rel='stylesheet' href='css/template_css.css' type='text/css' />
+        </head>
+        <body>
+            <form name='adminForm' id='adminForm' method='post' action=''>
+                <div style='width:30cm'>
+                    <table class='rangkacetak' style='width:30cm'>
+                        <tr>
+                            <td valign='top'>
+                                <table style='width:100%' border='0'>
+                                    <tr>
+                                        <td class='judulcetak' align='center'>PEMBAYARAN KOMISI ".$this->titiMangsa($filterTahun."-".$filterBulan."-01")."</td>
+                                    </tr>
+                                </table>
+                                <br>
+                                <div id='cntTerimaKondisi'></div>
+                                <div id='cntTerimaDaftar'>
+                                    <div class='demo'>
+                                        <table class='table table-striped' border='1' style='margin:4 0 0 0;width:' 100% ' id='pembayaranKomisi_table ' ><thead>
+            	   <tr>
+              	   <th class='th01 '  width='5 ' rowspan='2 '  style='text-align:center;vertical-align:middle; '>No.</th>
+
+            		   <th class='th01 ' width='200 '  rowspan='2 ' style='text-align:center;vertical-align:middle; '>NAMA</th>
+            		   <th class='th01 ' width='200 '  rowspan='2 ' style='text-align:center;vertical-align:middle; '>EMAIL</th>
+            		   <th class='th02 ' width='200 '  rowspan='1 ' colspan='3 ' style='text-align:center;vertical-align:middle; '>REKENING</th>
+            		   <th class='th02 ' width='200 '  rowspan='1 ' colspan='3 ' style='text-align:center;vertical-align:middle; '>PENDAPATAN</th>
+
+             	     <th class='th01 '  width='50 ' rowspan='2 ' style='text-align:center;vertical-align:middle; '>STATUS</th>
+            	   </tr>
+                 </tr>
+                 <th class='th01 ' width='200 '  style='text-align:center;vertical-align:middle; '>NAMA BANK</th>
+                 <th class='th01 ' width='200 '  style='text-align:center;vertical-align:middle; '>NOMOR</th>
+                 <th class='th01 ' width='200 '  style='text-align:center;vertical-align:middle; '>NAMA REKENING</th>
+                 <th class='th01 '  width='100 '  style='text-align:center;vertical-align:middle; '>TRANSAKSI</th>
+                 <th class='th01 '  width='100 '  style='text-align:center;vertical-align:middle; '>PEMBELIAN</th>
+                 <th class='th01 '  width='100 '  style='text-align:center;vertical-align:middle; '>KOMISI</th>
+                 </tr>
+        	        </thead><tbody>
+                  $rowPembayaranKomisi
+
+                    <tr>
+            				<td class='GarisCetak ' colspan='8 ' align='center '><b>Total </td>
+            				<td class='GarisDaftar ' align='right '>".$this->numberFormat($totalKomisi)."</td>
+            				<td class='GarisDaftar ' align='right '></td>
+            			</tr></tbody></table>
+
+
+        				</table> </td></tr>
+        			</table>
+        			</div>
+        			</form>
+        			</body>
+        			</html>
+        ";
+      }
+
+      function titiMangsa($tgl = "")
+      {
+          global $Ref;
+          if (!empty($tgl) and substr($tgl, 0, 4) != "0000") {
+              $cHr = @$Ref->NamaHari[date("w", mktime(0, 0, 0, substr($tgl, 5, 2), substr($tgl, 8, 2), substr($tgl, 0, 4)))];
+              return  @$Ref->NamaBulan[(substr($tgl, 5, 2) * 1) - 1] . " " . substr($tgl, 0, 4);
+          } else {
+              return " ";
+          }
+      }
 }
 $pembayaranKomisi = new pembayaranKomisiObj();
 $pembayaranKomisi->userName = $_COOKIE['coID'];;

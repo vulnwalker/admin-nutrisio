@@ -43,7 +43,7 @@ CREATE TABLE `admin` (
 
 LOCK TABLES `admin` WRITE;
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
-INSERT INTO `admin` (`uid`, `nama`, `password`, `status`, `online`, `lastaktif`, `ipaddr`, `sesino`, `jenis_user`, `hak_akses`) VALUES ('gobag','Gobag','827ccb0eea8a706c4c34a16891f84e7b','1','0',NULL,NULL,NULL,'operator','[{\"jenis\":\"bank\",\"id\":\"2\"},{\"jenis\":\"kas\",\"id\":\"1\"},{\"jenis\":\"kas\",\"id\":\"2\"}]'),('kszxpo','VulnWalker','a3bf5a28aef3c4d7d3d3417d7b41f023','1','1','2019-03-25 21:05:10','103.84.143.167',2045477273,'admin','[{\"jenis\":\"bank\",\"id\":\"1\"},{\"jenis\":\"bank\",\"id\":\"3\"},{\"jenis\":\"bank\",\"id\":\"2\"},{\"jenis\":\"kas\",\"id\":\"1\"},{\"jenis\":\"kas\",\"id\":\"2\"},{\"jenis\":\"bank\",\"id\":\"4\"}]'),('NADIA','NADIA','827ccb0eea8a706c4c34a16891f84e7b','1','0',NULL,NULL,NULL,'operator','[{\"jenis\":\"kas\",\"id\":\"1\"}]'),('ros','Ros','827ccb0eea8a706c4c34a16891f84e7b','1','1','2019-03-02 19:08:43','160.19.64.141',1893028069,'operator','[{\"jenis\":\"kas\",\"id\":\"1\"}]'),('SA','Iwan Hardiwan','e10adc3949ba59abbe56e057f20f883e','1','1','2019-01-16 11:58:51','125.163.110.11',1828140064,'operator','[{\"jenis\":\"bank\",\"id\":\"1\"},{\"jenis\":\"bank\",\"id\":\"3\"},{\"jenis\":\"bank\",\"id\":\"2\"},{\"jenis\":\"kas\",\"id\":\"1\"},{\"jenis\":\"kas\",\"id\":\"2\"},{\"jenis\":\"bank\",\"id\":\"4\"}]');
+INSERT INTO `admin` (`uid`, `nama`, `password`, `status`, `online`, `lastaktif`, `ipaddr`, `sesino`, `jenis_user`, `hak_akses`) VALUES ('gobag','Gobag','827ccb0eea8a706c4c34a16891f84e7b','1','0',NULL,NULL,NULL,'operator','[{\"jenis\":\"bank\",\"id\":\"2\"},{\"jenis\":\"kas\",\"id\":\"1\"},{\"jenis\":\"kas\",\"id\":\"2\"}]'),('kszxpo','VulnWalker','a3bf5a28aef3c4d7d3d3417d7b41f023','1','1','2019-04-05 20:55:15','103.84.147.192',1278553737,'admin','[{\"jenis\":\"bank\",\"id\":\"1\"},{\"jenis\":\"bank\",\"id\":\"3\"},{\"jenis\":\"bank\",\"id\":\"2\"},{\"jenis\":\"kas\",\"id\":\"1\"},{\"jenis\":\"kas\",\"id\":\"2\"},{\"jenis\":\"bank\",\"id\":\"4\"}]'),('NADIA','NADIA','827ccb0eea8a706c4c34a16891f84e7b','1','0',NULL,NULL,NULL,'operator','[{\"jenis\":\"kas\",\"id\":\"1\"}]'),('ros','Ros','827ccb0eea8a706c4c34a16891f84e7b','1','1','2019-03-02 19:08:43','160.19.64.141',1893028069,'operator','[{\"jenis\":\"kas\",\"id\":\"1\"}]'),('SA','Iwan Hardiwan','e10adc3949ba59abbe56e057f20f883e','1','1','2019-01-16 11:58:51','125.163.110.11',1828140064,'operator','[{\"jenis\":\"bank\",\"id\":\"1\"},{\"jenis\":\"bank\",\"id\":\"3\"},{\"jenis\":\"bank\",\"id\":\"2\"},{\"jenis\":\"kas\",\"id\":\"1\"},{\"jenis\":\"kas\",\"id\":\"2\"},{\"jenis\":\"bank\",\"id\":\"4\"}]');
 /*!40000 ALTER TABLE `admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,7 @@ CREATE TABLE `cart` (
   `qty` int(11) NOT NULL,
   `session_id` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` (`id`, `id_produk`, `qty`, `session_id`) VALUES (1,1,1,'20hYDwdBbbxnb7ooxKrkuVjPqdFMShbVdy4b25kw'),(2,1,1,'nD5ZApie6ozLjTUQoRZ5H45iO5tM62jvcn14hEIS');
+INSERT INTO `cart` (`id`, `id_produk`, `qty`, `session_id`) VALUES (26,1,1,'64e85b111621693c704a6f9c6839990d'),(27,1,1,'64e85b111621693c704a6f9c6839990d'),(28,1,1,'64e85b111621693c704a6f9c6839990d'),(29,1,1,'64e85b111621693c704a6f9c6839990d'),(30,1,1,'67e08d5e62e0c0a0235bd2d7f8c20c34'),(34,1,8,'0189a01946100aacf82667e79884a0f6'),(35,1,1,'0189a01946100aacf82667e79884a0f6'),(36,1,1,'c6ee44b04b5e787d986573f4e25e6c74'),(37,1,1,'c6ee44b04b5e787d986573f4e25e6c74'),(40,1,1,'c6ee44b04b5e787d986573f4e25e6c74');
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -119,7 +119,7 @@ CREATE TABLE `detail_penjualan` (
   KEY `id_produk` (`id_produk`),
   CONSTRAINT `detail_penjualan_ibfk_1` FOREIGN KEY (`id_penjualan`) REFERENCES `penjualan` (`id`),
   CONSTRAINT `detail_penjualan_ibfk_2` FOREIGN KEY (`id_produk`) REFERENCES `produk` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `detail_penjualan` (
 
 LOCK TABLES `detail_penjualan` WRITE;
 /*!40000 ALTER TABLE `detail_penjualan` DISABLE KEYS */;
-INSERT INTO `detail_penjualan` (`id`, `id_penjualan`, `id_produk`, `jumlah`, `harga`, `total`) VALUES (1,1,1,1,350000,350000);
+INSERT INTO `detail_penjualan` (`id`, `id_penjualan`, `id_produk`, `jumlah`, `harga`, `total`) VALUES (4,1,1,1,350000,350000),(6,18,1,1,350000,350000),(8,20,1,1,350000,350000),(9,1,1,1,350000,350000),(10,21,1,1,350000,350000),(11,22,1,1,350000,350000),(13,24,1,1,350000,350000),(14,25,1,1,350000,350000);
 /*!40000 ALTER TABLE `detail_penjualan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,7 +145,7 @@ CREATE TABLE `galeri` (
   `gambar` text NOT NULL,
   `id_admin` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,7 +154,7 @@ CREATE TABLE `galeri` (
 
 LOCK TABLES `galeri` WRITE;
 /*!40000 ALTER TABLE `galeri` DISABLE KEYS */;
-INSERT INTO `galeri` (`id`, `tanggal`, `gambar`, `id_admin`) VALUES (1,'2019-03-24','upload/abc6526405ec1850123a077f41e21eecd07b135450d744d235a2f4d530cf8e3e.jpg','');
+INSERT INTO `galeri` (`id`, `tanggal`, `gambar`, `id_admin`) VALUES (1,'2019-03-24','upload/abc6526405ec1850123a077f41e21eecd07b135450d744d235a2f4d530cf8e3e.jpg',''),(2,'2019-03-31','upload/1e6e35022ea2226a28fe255d308cfc45a1f175c37ab0435b85c6d2053c4a89a5.jpg','');
 /*!40000 ALTER TABLE `galeri` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +175,7 @@ CREATE TABLE `komisi` (
   PRIMARY KEY (`id`),
   KEY `id_penjualan` (`id_penjualan`),
   CONSTRAINT `komisi_ibfk_1` FOREIGN KEY (`id_penjualan`) REFERENCES `penjualan` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +184,7 @@ CREATE TABLE `komisi` (
 
 LOCK TABLES `komisi` WRITE;
 /*!40000 ALTER TABLE `komisi` DISABLE KEYS */;
-INSERT INTO `komisi` (`id`, `id_penjualan`, `komisi`, `jenis_komisi`, `id_member`, `tanggal`) VALUES (40,1,'5000','PENJUALAN','2','2019-03-21'),(41,1,'5000','PENJUALAN','3','2019-03-21'),(42,1,'5000','PENJUALAN','4','2019-03-21'),(43,1,'10000','PENJUALAN','5','2019-03-21'),(44,1,'100000','REKRUT','6','2019-03-21');
+INSERT INTO `komisi` (`id`, `id_penjualan`, `komisi`, `jenis_komisi`, `id_member`, `tanggal`) VALUES (40,1,'5000','PENJUALAN','2','2019-03-21'),(41,1,'5000','PENJUALAN','3','2019-03-21'),(42,1,'5000','PENJUALAN','4','2019-03-21'),(43,1,'10000','PENJUALAN','5','2019-03-21'),(44,1,'100000','REKRUT','6','2019-03-21'),(45,18,'5000','PENJUALAN','2','2019-03-27'),(46,18,'5000','PENJUALAN','3','2019-03-27'),(47,18,'5000','PENJUALAN','4','2019-03-27'),(48,18,'10000','PENJUALAN','5','2019-03-27'),(49,18,'100000','REKRUT','6','2019-03-27'),(50,20,'5000','PENJUALAN','3','2019-03-28'),(51,20,'5000','PENJUALAN','4','2019-03-28'),(52,20,'5000','PENJUALAN','5','2019-03-28'),(53,20,'10000','PENJUALAN','6','2019-03-28'),(54,20,'100000','REKRUT','7','2019-03-28'),(55,21,'25000','PENJUALAN','7','2019-04-03');
 /*!40000 ALTER TABLE `komisi` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,7 +281,7 @@ CREATE TABLE `pembayaran_komisi` (
   `bukti_transfer` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_member` (`id_member`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,6 +290,7 @@ CREATE TABLE `pembayaran_komisi` (
 
 LOCK TABLES `pembayaran_komisi` WRITE;
 /*!40000 ALTER TABLE `pembayaran_komisi` DISABLE KEYS */;
+INSERT INTO `pembayaran_komisi` (`id`, `id_member`, `tanggal`, `jumlah`, `bukti_transfer`) VALUES (1,2,'2019-03-28',10000,'');
 /*!40000 ALTER TABLE `pembayaran_komisi` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,7 +322,7 @@ CREATE TABLE `penjualan` (
   `service_pengiriman` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_trafic` (`id_trafic`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -330,7 +331,7 @@ CREATE TABLE `penjualan` (
 
 LOCK TABLES `penjualan` WRITE;
 /*!40000 ALTER TABLE `penjualan` DISABLE KEYS */;
-INSERT INTO `penjualan` (`id`, `id_member`, `nama_pembeli`, `email_pembeli`, `nomor_telepon`, `alamat_pengiriman`, `kecamatan_pengiriman`, `kota_pengiriman`, `provinsi_pengiriman`, `kode_pos_pengiriman`, `tanggal`, `sub_total`, `ongkir`, `total`, `status`, `id_trafic`, `id_admin`, `service_pengiriman`) VALUES (1,6,'Soni Hilman','soni@getnada.com','+62 822-1604-6418','rt.08/rw.03 kel.kebonwaru \r\n','kec.batununggal','Bandung','Jawa Barat','40121','2019-03-20',350000,11000,361000,'SUKSES',1,'kszxpo','');
+INSERT INTO `penjualan` (`id`, `id_member`, `nama_pembeli`, `email_pembeli`, `nomor_telepon`, `alamat_pengiriman`, `kecamatan_pengiriman`, `kota_pengiriman`, `provinsi_pengiriman`, `kode_pos_pengiriman`, `tanggal`, `sub_total`, `ongkir`, `total`, `status`, `id_trafic`, `id_admin`, `service_pengiriman`) VALUES (1,6,'Soni Hilman','soni@getnada.com','+62 822-1604-6418','rt.08/rw.03 kel.kebonwaru \r\n','kec.batununggal','Bandung','Jawa Barat','40121','2019-03-20',350000,11000,361000,'SUKSES',1,'kszxpo',''),(18,6,'Imam Mutaqien','devops@rm-rf.studio','0821399213','Komplek PPTN','Cimahi','Cimahi','Jawa Barat','40121','2019-03-27',350000,0,350000,'SUKSES',88,'kszxpo','DIJEMPUT'),(20,7,'Julius','julius@pilar.web.id','08123125123','Setia siBudi','-','Bandung','Jawa Barat','98236','2019-03-28',350000,0,350000,'SUKSES',118,'kszxpo','DIJEMPUT'),(21,0,'dzakirharista@gmail.com','dzakirharista@gmail.com','3134606488','Komple PPTN','Desa Giriasih Kecamatan Batujajar','Ketapang','Kalimantan Selatan','40561','2019-03-31',350000,0,350000,'SUKSES',122,'kszxpo','DIJEMPUT'),(22,6,'Melissa','melissa.evans@broshegroup.com','3134606488','ssd','gd','Bangka Barat','Bangka Belitung','324234','2019-03-31',350000,11000,361000,'PENDING',124,'','REG'),(24,6,'AppPharmacy','test@test.com','122213','hjdasj','sad','Kulon Progo','DI Yogyakarta','0011','2019-04-05',350000,16000,366000,'PENDING',116,'','OKE'),(25,0,'Hubla','test@test.com','0821312123','Komple PPTN','Desa Giriasih Kecamatan Batujajar','Lebak','Banten','40561','2019-04-05',350000,15000,365000,'PENDING',125,'','OKE');
 /*!40000 ALTER TABLE `penjualan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,7 +354,7 @@ CREATE TABLE `produk` (
   `video` text NOT NULL,
   `berat` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -362,7 +363,7 @@ CREATE TABLE `produk` (
 
 LOCK TABLES `produk` WRITE;
 /*!40000 ALTER TABLE `produk` DISABLE KEYS */;
-INSERT INTO `produk` (`id`, `nama_produk`, `harga`, `harga_member`, `deskripsi`, `promo`, `komisi`, `gambar`, `video`, `berat`) VALUES (1,'Nutrisio 30 ML',350000,250000,'NUTRISIO adalah Superdrink Jakonti (jamu tetes konsentrasi tinggi) dari formulasi ekstrak herbal murni yang terstandar untuk sel-sel otak dan terapi gangguan dengan saraf otak tepi.\r\n','Beli 20 dapat tambahan produk senilai 1 juta','[\n    {\n        \"komisi\": \"5000\"\n    },\n    {\n        \"komisi\": \"5000\"\n    },\n    {\n        \"komisi\": \"5000\"\n    },\n    {\n        \"komisi\": \"10000\"\n    }\n]','upload/0cd4afca2c4cfadfe70266eb9ac449e3602a5e1912c9a754b00ecce837dba2b8.jpg','https://youtu.be/R8l2XLnKSFY',0),(4,'Essenzo 10 ML',200000,180000,'Deskripsi Produk ','- ','[{\"komisi\":\"1000\"},{\"komisi\":\"2000\"},{\"komisi\":\"3000\"},{\"komisi\":\"4000\"}]','upload/b5b49f508aaa434a5ffb0f8c26928c45f4069e8ef3f90d02662ef11fee8675f5.jpg','https://www.youtube.com/watch?v=sR4XUhrplIA&list=RDk4E0T8RmdnU&index=5',0);
+INSERT INTO `produk` (`id`, `nama_produk`, `harga`, `harga_member`, `deskripsi`, `promo`, `komisi`, `gambar`, `video`, `berat`) VALUES (1,'Nutrisio 30 ML',350000,250000,'NUTRISIO adalah Superdrink Jakonti (jamu tetes konsentrasi tinggi) dari formulasi ekstrak herbal murni yang terstandar untuk sel-sel otak dan terapi gangguan dengan saraf otak tepi.\r\n','Beli 20 dapat tambahan produk senilai 1 juta','[\n    {\n        \"komisi\": \"5000\"\n    },\n    {\n        \"komisi\": \"5000\"\n    },\n    {\n        \"komisi\": \"5000\"\n    },\n    {\n        \"komisi\": \"10000\"\n    }\n]','upload/445a09a3b3524c03012e78beb7d056833148ad0d03137c196cae4ed2ad5cb4ae.jpg','https://youtu.be/R8l2XLnKSFY',200);
 /*!40000 ALTER TABLE `produk` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -407,7 +408,7 @@ CREATE TABLE `setting` (
   `nama` text NOT NULL,
   `isi` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -416,7 +417,7 @@ CREATE TABLE `setting` (
 
 LOCK TABLES `setting` WRITE;
 /*!40000 ALTER TABLE `setting` DISABLE KEYS */;
-INSERT INTO `setting` (`id`, `nama`, `isi`) VALUES (1,'URL_GAMBAR','https://admin.nutrisio.rm-rf.studio/'),(2,'NOMOR REKENING','BCA,812832183821,Suryadi');
+INSERT INTO `setting` (`id`, `nama`, `isi`) VALUES (1,'URL_GAMBAR','https://admin.nutrisio.rm-rf.studio/'),(2,'NOMOR REKENING','BCA,812832183821,Suryadi'),(4,'URL_ARTIKEL','https://nutrisio.rm-rf.studio/');
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -435,7 +436,7 @@ CREATE TABLE `trafic` (
   `id_artikel` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_member` (`id_member`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -444,7 +445,7 @@ CREATE TABLE `trafic` (
 
 LOCK TABLES `trafic` WRITE;
 /*!40000 ALTER TABLE `trafic` DISABLE KEYS */;
-INSERT INTO `trafic` (`id`, `id_member`, `unique_id`, `tanggal`, `id_artikel`) VALUES (1,1,'GA1.2.1762263390.1552573313','2019-03-14','1'),(26,2,'372bPScsWJn2k0wakeZTu4Gqj6kEPKQ4bBJ5JhVa','2019-03-23',''),(27,0,'nD5ZApie6ozLjTUQoRZ5H45iO5tM62jvcn14hEIS','2019-03-23',''),(28,0,'BWWSS63JZjueCIv9POclSq6a4wxBC6qXDPOFvGEw','2019-03-24',''),(29,0,'MfQPO2u0SmgF3qos7jr64pjeYXCttwttvfbRVwrS','2019-03-24',''),(30,0,'7vO3i190gnkMG2VzjPQEvuR93eNWqhKve3L0mAbU','2019-03-24',''),(31,2,'IDIcYLfsyf8Qde0Lr1AqVtHPUMS4IoEBtA63wo5d','2019-03-24','0'),(33,2,'ik1abd93th0c0msheiu7jf6gfr','2019-03-24',''),(34,0,'B9wbWJjJkWs9iGbknhXRwCZQw5JxWBwxiYfQJT8f','2019-03-25',''),(35,0,'RPvNah1uBK0giyh9HZURiU8FIeyHSD3lIYAN614B','2019-03-26','');
+INSERT INTO `trafic` (`id`, `id_member`, `unique_id`, `tanggal`, `id_artikel`) VALUES (115,7,'2896c3d89f1661b0284a17481d043721','2019-03-27','3'),(116,6,'b4cacd1f08b6eac0d490b355f8d04d99','2019-03-27','2'),(117,0,'67e08d5e62e0c0a0235bd2d7f8c20c34','2019-03-28',''),(119,7,'36d462dfef982d65b1fabd66016a744c','2019-03-28','3'),(120,0,'0189a01946100aacf82667e79884a0f6','2019-03-28',''),(121,6,'0c7f8634274c3e198f53120efeb6a1b5','2019-03-29',''),(123,6,'3e81da7513086a6d340f3f7c5582ff6e','2019-03-31','3'),(124,6,'88ad75fe9315572571a68d4551673581','2019-03-31','3'),(125,0,'26281a2b4db284b2b41911beca8fc72f','2019-03-31',''),(126,0,'c7ea75a4852bf697261cf5cd9b01ab7b','2019-03-31',''),(127,0,'a9fecc0638f525e6101d748dee331998','2019-03-31',''),(128,0,'5b46ab57c0c244d00566a3afdadf12d2','2019-04-01',''),(129,0,'ab7e8b29a91559041817488c9d0669c4','2019-04-01',''),(130,0,'e61a653b8935f4e1c6c75b7c841d36e5','2019-04-02',''),(131,6,'64e85b111621693c704a6f9c6839990d','2019-04-03','3'),(132,0,'c8765a698f2388d9b066dd4c9864eba3','2019-04-04',''),(133,0,'c6ee44b04b5e787d986573f4e25e6c74','2019-04-05',''),(134,0,'f03455698a47101b569b483c88de0ef1','2019-04-06',''),(135,0,'051f1da4632e7eee5e28e0b12e9e12e6','2019-04-06','');
 /*!40000 ALTER TABLE `trafic` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -465,16 +466,19 @@ CREATE TABLE `users` (
   `nomor_telepon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nama_bank` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomor_rekening` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama_rekening` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `upline` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tanggal_join` date NOT NULL,
   `komisi` decimal(10,0) NOT NULL,
+  `jumlah_transaksi` int(11) NOT NULL,
+  `jumlah_barang` int(11) NOT NULL,
   `status` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -483,9 +487,24 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`id`, `nama`, `email`, `email_verified_at`, `password`, `alamat`, `nomor_telepon`, `nama_bank`, `nomor_rekening`, `upline`, `tanggal_join`, `komisi`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES (1,'taufan','taufan@test.com',NULL,'$2y$10$2uc8RDgCMppSEwJFs0iHs.DWa6SSgkRy3SJ.VH22/t6pnG3YyBVYi','','','','','[    {       \"LEVEL1\":\"0\"    },    {       \"LEVEL2\":\"0\"    },    {       \"LEVEL3\":\"0\"    },    {       \"LEVEL4\":\"1\"    } ]','0000-00-00',0,'0',NULL,'2019-03-18 07:20:37','2019-03-18 07:20:37'),(2,'Dzakir Harist Abdullah','dzakirharista@gmail.com',NULL,'efca012df0ab58795c1a8a4b72457038','Jl Junaedi no 6 Kota Bandung','081223744803','BCA Syariah','0350042248','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"0\"\r\n   }\r\n]','2019-03-14',5000,'PREMIUM',NULL,NULL,NULL),(3,'Ananda Mahdar','mahar@getnada.cpm',NULL,'','Jl Cibodas No.1','081223744803','Bank RIBA','0213219312','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"2\"\r\n   }\r\n]','2019-03-18',5000,'PREMIUM',NULL,NULL,NULL),(4,'Andy ABa','andy@getnada.cpm',NULL,'','Surapati Core','081223744803','Bank RIBA','0213219312','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"2\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"3\"\r\n   }\r\n]','2019-03-18',5000,'PREMIUM',NULL,NULL,NULL),(5,'Julius','julius@getnada.cpm',NULL,'','Setia Budi','081223744803','Bank RIBA','0213219312','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"2\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"3\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"4\"\r\n   }\r\n]','2019-03-18',10000,'PREMIUM',NULL,NULL,NULL),(6,'Syifa','syifa@getnada.cpm',NULL,'','Dago','081223744803','Bank RIBA','0213219312','[\r\n   {\r\n      \"LEVEL1\":\"2\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"3\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"4\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"5\"\r\n   }\r\n]','2019-03-18',100000,'PREMIUM',NULL,NULL,NULL),(7,'Soni Hilman','soni@getnada.com',NULL,'$2y$10$UYv3PqUoygt59viJIHm0t.xFk3RA7u/3TirEONosL5rHrYHoerdDy','rt.08/rw.03 kel.kebonwaru \r\n\nkec.batununggal <br>Bandung <br>Jawa Barat <br>40121','+62 822-1604-6418','','','[\n    {\n        \"LEVEL1\": \"3\"\n    },\n    {\n        \"LEVEL2\": \"4\"\n    },\n    {\n        \"LEVEL3\": \"5\"\n    },\n    {\n        \"LEVEL4\": \"6\"\n    }\n]','2019-03-21',0,'PREMIUM',NULL,NULL,NULL);
+INSERT INTO `users` (`id`, `nama`, `email`, `email_verified_at`, `password`, `alamat`, `nomor_telepon`, `nama_bank`, `nomor_rekening`, `nama_rekening`, `upline`, `tanggal_join`, `komisi`, `jumlah_transaksi`, `jumlah_barang`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES (1,'taufan','taufan@test.com',NULL,'$2y$10$2uc8RDgCMppSEwJFs0iHs.DWa6SSgkRy3SJ.VH22/t6pnG3YyBVYi','','','','','','[    {       \"LEVEL1\":\"0\"    },    {       \"LEVEL2\":\"0\"    },    {       \"LEVEL3\":\"0\"    },    {       \"LEVEL4\":\"1\"    } ]','0000-00-00',0,0,0,'AKTIF',NULL,'2019-03-18 07:20:37','2019-03-18 07:20:37'),(2,'Dzakir Harist Abdullah','dzakirharista@gmail.com',NULL,'$2y$10$2uc8RDgCMppSEwJFs0iHs.DWa6SSgkRy3SJ.VH22/t6pnG3YyBVYi','Jl Junaedi no 6 Kota Bandung','081223744803','BCA Syariah','0350042248','','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"0\"\r\n   }\r\n]','2019-03-14',10000,0,0,'AKTIF',NULL,NULL,NULL),(3,'Ananda Mahdar','mahar@getnada.cpm',NULL,'','Jl Cibodas No.1','081223744803','Bank RIBA','0213219312','','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"2\"\r\n   }\r\n]','2019-03-18',15000,0,0,'AKTIF',NULL,NULL,NULL),(4,'Andy ABa','andy@getnada.cpm',NULL,'','Surapati Core','081223744803','Bank RIBA','0213219312','','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"2\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"3\"\r\n   }\r\n]','2019-03-18',15000,0,0,'AKTIF',NULL,NULL,NULL),(5,'Julius','julius@getnada.cpm',NULL,'','Setia Budi','081223744803','Bank RIBA','0213219312','','[\r\n   {\r\n      \"LEVEL1\":\"0\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"2\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"3\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"4\"\r\n   }\r\n]','2019-03-18',25000,0,0,'AKTIF',NULL,NULL,NULL),(6,'Taufan Tritama Putra','test@test.com',NULL,'$2y$10$2uc8RDgCMppSEwJFs0iHs.DWa6SSgkRy3SJ.VH22/t6pnG3YyBVYi','Jl Junaedi no 6 Kota Bandung','081223744803','BCA','41242141','','[\r\n   {\r\n      \"LEVEL1\":\"2\"\r\n   },\r\n   {\r\n      \"LEVEL2\":\"3\"\r\n   },\r\n   {\r\n      \"LEVEL3\":\"4\"\r\n   },\r\n   {\r\n      \"LEVEL4\":\"5\"\r\n   }\r\n]','2019-03-18',210000,0,0,'AKTIF',NULL,NULL,NULL),(7,'Soni Hilman','soni@getnada.com',NULL,'$2y$10$2uc8RDgCMppSEwJFs0iHs.DWa6SSgkRy3SJ.VH22/t6pnG3YyBVYi','rt.08/rw.03 kel.kebonwaru \r\n\r\nkec.batununggal <br>Bandung <br>Jawa Barat <br>40121','+62 822-1604-6418','','','','[\r\n    {\r\n        \"LEVEL1\": \"3\"\r\n    },\r\n    {\r\n        \"LEVEL2\": \"4\"\r\n    },\r\n    {\r\n        \"LEVEL3\": \"5\"\r\n    },\r\n    {\r\n        \"LEVEL4\": \"6\"\r\n    }\r\n]','2019-03-21',100000,0,0,'AKTIF',NULL,NULL,NULL),(9,'Imam Mutaqien','devops@rm-rf.studio',NULL,'$2y$10$NhENEekktGstib6qxbnPP.904zGqWOwpWcNaURoPZTHH.1Os83FeC','Komplek PPTN\nCimahi <br>Cimahi <br>Jawa Barat <br>40121','0821399213','','','','[\n    {\n        \"LEVEL1\": \"3\"\n    },\n    {\n        \"LEVEL2\": \"4\"\n    },\n    {\n        \"LEVEL3\": \"5\"\n    },\n    {\n        \"LEVEL4\": \"6\"\n    }\n]','2019-03-27',0,0,0,'AKTIF',NULL,NULL,NULL),(11,'Julius','julius@pilar.web.id',NULL,'$2y$10$56EY4NLqKdksNTv.gIZGSOlDUG/xKcoXvyApc.hlaGZuJMFvXvGcK','Setia siBudi\n- <br>Bandung <br>Jawa Barat <br>98236','08123125123','','','','[\n    {\n        \"LEVEL1\": \"4\"\n    },\n    {\n        \"LEVEL2\": \"5\"\n    },\n    {\n        \"LEVEL3\": \"6\"\n    },\n    {\n        \"LEVEL4\": \"7\"\n    }\n]','2019-03-28',0,0,0,'AKTIF',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary table structure for view `view_buku_induk2`
+--
+
+DROP TABLE IF EXISTS `view_buku_induk2`;
+/*!50001 DROP VIEW IF EXISTS `view_buku_induk2`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `view_buku_induk2` AS SELECT 
+ 1 AS `id`,
+ 1 AS `SUM(komisi.komisi)`,
+ 1 AS `totalPenjualan`,
+ 1 AS `tanggal`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Temporary table structure for view `view_rekap_komisi`
@@ -503,6 +522,24 @@ SET character_set_client = utf8;
  1 AS `id_member`,
  1 AS `tanggal`*/;
 SET character_set_client = @saved_cs_client;
+
+--
+-- Final view structure for view `view_buku_induk2`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_buku_induk2`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_buku_induk2` AS select `users`.`id` AS `id`,sum(`komisi`.`komisi`) AS `SUM(komisi.komisi)`,(select count(`komisi`.`id`) from `komisi` where ((`komisi`.`jenis_komisi` = 'PENJUALAN') and (`komisi`.`id_member` = `users`.`id`))) AS `totalPenjualan`,`komisi`.`tanggal` AS `tanggal` from (`komisi` left join `users` on((`users`.`id` = `komisi`.`id_member`))) where (`komisi`.`komisi` > 0) group by `users`.`id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
 -- Final view structure for view `view_rekap_komisi`
@@ -531,4 +568,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-26 18:34:23
+-- Dump completed on 2019-04-07 18:30:49

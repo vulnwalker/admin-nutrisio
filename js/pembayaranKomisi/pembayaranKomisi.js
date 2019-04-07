@@ -232,6 +232,20 @@ var pembayaranKomisi = new DaftarObj2({
      fileReader.readAsDataURL(fileToLoad);
    }
  },
+ CetakDaftar: function() {
+   var me = this;
+   // errmsg = this.CekCheckbox();
+   errmsg = "";
+   if (errmsg == "") {
+     var aForm = document.getElementById(this.prefix+"Form");
+     aForm.action = "pages.php?Pg="+this.prefix+"&tipe=CetakDaftar";
+     aForm.target = "_blank";
+     aForm.submit();
+     aForm.target = "";
+   } else {
+     alert(errmsg);
+   }
+ },
 
 
 });
