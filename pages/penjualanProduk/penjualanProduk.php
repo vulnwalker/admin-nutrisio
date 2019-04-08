@@ -840,6 +840,7 @@ class penjualanProdukObj extends configClass
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>EMAIL</th>
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>SUB TOTAL</th>
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>ONGKIR</th>
+           <th class='th01' width='50'  style='text-align:center;vertical-align:middle;'>KODE UNIK</th>
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>TOTAL</th>
      	     <th class='th01'  width='100'  style='text-align:center;vertical-align:middle;'>SERVICE</th>
      	     <th class='th01'  width='50'  style='text-align:center;vertical-align:middle;'>STATUS</th>
@@ -870,6 +871,7 @@ class penjualanProdukObj extends configClass
             'align="center" valign="middle"',
             $id
         );
+
         $Koloms[] = array(
             'align="center" valign="middle"',
             $this->generateDate($tanggal)
@@ -904,6 +906,11 @@ class penjualanProdukObj extends configClass
           'align="right" valign="middle"',
           $this->numberFormat($ongkir)
         );
+        $kodeUnik = $total - ($ongkir + $sub_total);
+        $Koloms[] = array(
+            'align="center" valign="middle"',
+            $this->numberFormat($kodeUnik)
+        );
         $Koloms[] = array(
           'align="right" valign="middle"',
           $this->numberFormat($total)
@@ -937,15 +944,59 @@ class penjualanProdukObj extends configClass
                 'STATUS'
             ),
         );
+        $arrayBulan = array(
+            array('01','JANUARI'),
+            array('02','FEBRUARI'),
+            array('03','MARET'),
+            array('04','APRIL'),
+            array('05','MEI'),
+            array('06','JUNI'),
+            array('07','JULI'),
+            array('08','AGUSTUS'),
+            array('09','SEPTEMBER'),
+            array('10','OKTOBER'),
+            array('11','NOVEMBER'),
+            array('12','DESEMBER'),
+
+        );
         if (empty($jumlahData))
         $jumlahData = 50;
         $comboFilterstatusProduk = cmbArray('filterStatus', $filterStatus, $arrayStatus, '-- STATUS --', "onchange=$this->Prefix.refreshList(true)");
+        $comboFilterBulan = cmbArray('filterBulan', $filterBulan, $arrayBulan, '-- BULAN --', "");
         $TampilOpt         = "<div class='FilterBar' style='margin-top:5px;'>" . "<table style='width:100%'>
+				<tr>
+					<td>NO Order</td>
+					<td>:</td>
+					<td style='width:86%;'>
+						<input type='text' class='form-control' name='filterNomorOrder' id ='filterNomorOrder' style='width:200px;' value='$filterNomorOrder'>
+					</td>
+				</tr>
+				<tr>
+					<td>Kode Unik</td>
+					<td>:</td>
+					<td style='width:86%;'>
+						<input type='text' class='form-control' name='filterKodeUnik' id ='filterKodeUnik' style='width:200px;' value='$filterKodeUnik'>
+					</td>
+				</tr>
 				<tr>
 					<td>NAMA PEMBELI</td>
 					<td>:</td>
 					<td style='width:86%;'>
 						<input type='text' class='form-control' name='filterNamaPembeli' id ='filterNamaPembeli' style='width:400px;' value='$filterNamaPembeli'>
+					</td>
+				</tr>
+        <tr>
+					<td>TAHUN</td>
+					<td>:</td>
+					<td style='width:86%;'>
+						<input type='text' class='form-control' name='filterTahun' id ='filterTahun' style='width:400px;' value='$filterTahun'>
+					</td>
+				</tr>
+				<tr>
+					<td>BULAN</td>
+					<td>:</td>
+					<td style='width:86%;'>
+						$comboFilterBulan
 					</td>
 				</tr>
 				<tr>
@@ -1000,6 +1051,12 @@ class penjualanProdukObj extends configClass
             $$key = $value;
         }
         $arrKondisi = array();
+        if (!empty($filterNomorOrder)) {
+            $arrKondisi[] = "id = '$filterNomorOrder'";
+        }
+        if (!empty($filterKodeUnik)) {
+            $arrKondisi[] = "(total - (ongkir + sub_total)) = '$filterKodeUnik'";
+        }
         if (!empty($filterNamaPembeli)) {
             $arrKondisi[] = "nama_pembeli like '%$filterNamaPembeli%'";
         }
@@ -1008,6 +1065,12 @@ class penjualanProdukObj extends configClass
         }
         if (!empty($filterStatus)) {
             $arrKondisi[] = "status = '$filterStatus'";
+        }
+        if(!empty($filterTahun)){
+          $arrKondisi[] = "year(tanggal) = '$filterTahun'";
+        }
+        if(!empty($filterBulan)){
+          $arrKondisi[] = "month(tanggal) = '$filterBulan'";
         }
 
         $Kondisi = join(' and ', $arrKondisi);
@@ -1048,11 +1111,11 @@ class penjualanProdukObj extends configClass
   			  	$$key = $value;
   			 }
         $arrayKondisi = $this->getDaftarOpsi(1);
-        $getTotal = sqlArray(sqlQuery("select sum(total) from penjualan ".$arrKondisi['Kondisi']));
+        $getTotal = sqlArray(sqlQuery("select sum(total) from penjualan ".$arrayKondisi['Kondisi']));
         if($tipe == 'cetak_all'){
           $ContentTotalHal =
     			"<tr>
-    				<td class='$ColStyle' colspan='9' align='center'><b>Total </td>
+    				<td class='$ColStyle' colspan='10' align='center'><b>Total </td>
     				<td class='GarisDaftar' align='right'>".$this->numberFormat($getTotal['sum(total)'] )."</td>
     				<td class='GarisDaftar' align='right'></td>
     				<td class='GarisDaftar' align='right'></td>
@@ -1060,7 +1123,7 @@ class penjualanProdukObj extends configClass
         }else{
           $ContentTotalHal =
     			"<tr>
-    				<td class='$ColStyle' colspan='10' align='center'><b>Total </td>
+    				<td class='$ColStyle' colspan='11' align='center'><b>Total </td>
     				<td class='GarisDaftar' align='right'>".$this->numberFormat($getTotal['sum(total)'] )."</td>
     				<td class='GarisDaftar' align='right'></td>
     				<td class='GarisDaftar' align='right'></td>
@@ -1218,6 +1281,7 @@ class penjualanProdukObj extends configClass
         </tr>
 
         ";
+        $kodeUnik = $getDataPenjualan['total'] - ( $getDataPenjualan['ongkir'] +  $subTotal);
         echo "
 
         $style
@@ -1259,7 +1323,6 @@ class penjualanProdukObj extends configClass
                                         <td>
                                             ".$getDataPenjualan['nama_pembeli'].".
                                             <br> ".$getDataPenjualan['nomor_telepon']."
-                                            <br> ".$getDataPenjualan['email_pembeli']."
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1292,9 +1355,15 @@ class penjualanProdukObj extends configClass
                     </tr>
                     $rowShipment
                     <tr class='total'>
+                        <td colspan='4' style='text-align:right;'>Kode Unik :</td>
+                        <td>
+                             ".$this->numberFormat($kodeUnik)."
+                        </td>
+                    </tr>
+                    <tr class='total'>
                         <td colspan='4' style='text-align:right;'>Total :</td>
                         <td>
-                             ".$this->numberFormat($subTotal + $getDataPenjualan['ongkir'])."
+                             ".$this->numberFormat($getDataPenjualan['total'])."
                         </td>
                     </tr>
                 </tbody>

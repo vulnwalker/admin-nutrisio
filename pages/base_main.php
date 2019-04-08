@@ -40,7 +40,7 @@ $Main->Base =
         <link rel='stylesheet' href='../css/css_asset/style.css' type='text/css' />
 
 
-    <title>REZEKI KITA</title>
+    <title>RIZKI KITA</title>
 </head>
     <body>
 

@@ -857,7 +857,7 @@ class pembayaranKomisiObj extends configClass
   			  	$$key = $value;
   			 }
         $arrayKondisi = $this->getDaftarOpsi(1);
-        $getTotal = sqlArray(sqlQuery("select sum(komisi) from rekap_transaksi ".$arrKondisi['Kondisi']));
+        $getTotal = sqlArray(sqlQuery("select sum(komisi) from rekap_transaksi ".$arrayKondisi['Kondisi']));
         if($tipe == 'cetak_all'){
           $ContentTotalHal =
     			"<tr>
