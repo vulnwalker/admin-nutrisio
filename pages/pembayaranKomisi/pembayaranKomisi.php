@@ -608,17 +608,7 @@ class pembayaranKomisiObj extends configClass
             $getDataMember['nama_rekening']
         );
 
-        // $arrKondisi = array();
-        // if (!empty($filterTahun)) {
-        //     $arrKondisi[] = "year(tanggal) ='$filterTahun'";
-        // }
-        // if (!empty($filterBulan)) {
-        //     $arrKondisi[] = "month(tanggal) ='$filterBulan'";
-        // }
-        // if(sizeof($arrKondisi) != 0){
-        //   $Kondisi = "and ".join(' and ', $arrKondisi);
-        // }
-        // $getDataKomisi = sqlArray(sqlQuery("select sum(komisi) from komisi where id_member = '$id_member' $Kondisi "));
+
         $Koloms[] = array(
           'align="right" valign="middle"',
           $this->numberFormat($jumlah_penjualan)
@@ -634,6 +624,17 @@ class pembayaranKomisiObj extends configClass
 
         $status = "<img src='images/administrator/images/invalid.png' width='20px' heigh='20px' />";
         if (!empty($filterTahun) && !empty($filterBulan) ) {
+          $arrKondisi = array();
+          if (!empty($filterTahun)) {
+              $arrKondisi[] = "year(tanggal) ='$filterTahun'";
+          }
+          if (!empty($filterBulan)) {
+              $arrKondisi[] = "month(tanggal) ='$filterBulan'";
+          }
+          if(sizeof($arrKondisi) != 0){
+            $Kondisi = "and ".join(' and ', $arrKondisi);
+          }
+          $getDataKomisi = sqlArray(sqlQuery("select sum(komisi) from komisi where id_member = '$id_member' $Kondisi "));
           $getDataPembayaran = sqlRowCount(sqlQuery("select * from pembayaran_komisi where id_member = '$id_member' $Kondisi"));
           if(!empty($getDataPembayaran)){
             $status = "<img src='images/administrator/images/valid.png' width='20px' heigh='20px' />";
@@ -775,6 +776,7 @@ class pembayaranKomisiObj extends configClass
       sqlQuery($queryUpdateKomisi);
     }
 
+
     function getDaftarOpsi($Mode = 1)
     {
         global $Main, $HTTP_COOKIE_VARS;
@@ -804,7 +806,14 @@ class pembayaranKomisiObj extends configClass
             $arrKondisi[] = "id_member in ( select id_member from pembayaran_komisi where year(tanggal) ='$filterTahun' and month(tanggal) ='$filterBulan') ";
           }
         }
-
+        $arrayUserBlokir = array();
+        $getUserBlokir = sqlQuery("select * from users where status='TIDAK AKTIF' ");
+        while ($dataUserBlokir = sqlArray($getUserBlokir)) {
+          $arrayUserBlokir[] = $dataUserBlokir['id'];
+        }
+        if(sizeof($arrayUserBlokir) > 0 ){
+          $arrKondisi[] = "id_member not in (".implode($arrayUserBlokir).")";
+        }
         if(!empty($minimalPencairan)){
           $arrKondisi[] = "komisi > $minimalPencairan";
         }

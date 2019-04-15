@@ -53,7 +53,7 @@ $Main->Base =
             <h1>
                 <a data-scroll='scrollto'  href='#start'>
                     <img src='../img/headerlogo.png' height='32' width='35' class='header-logo' alt=''/>
-                    RIZKI KITA
+                    REZEKI KITA
                 </a>
             </h1>
         </div>
@@ -70,42 +70,42 @@ $Main->Base =
                 <!-- /SECTION TITLE -->
 
                 <!-- SECTION TILES -->
-                <div class='tile turquoise w4 h1 title-horizontalcenter icon-scaleuprotate360cw'>
+                <div class='tile turquoise w4 h2 title-horizontalcenter icon-scaleuprotate360cw'>
                     <a class='link' href='pages.php?Pg=penjualanProduk'>
                         <i class='fas fa-shopping-cart'></i>
                         <p class='title'>Penjualan</p>
                     </a>
                 </div>
 
-                <div class='tile orange w2 h1 icon-featurecw title-fadeout'>
+                <div class='tile orange w4 h2 icon-featurecw title-fadeout'>
                     <a   href='pages.php?Pg=pembayaranKomisi' class='link'>
                         <i class='fas fa-comments-dollar'></i>
                         <p class='title'>Komisi</p>
                     </a>
                 </div>
 
-                <div class='tile blue title-verticalcenter icon-flip w4 h1'>
+                <div class='tile blue title-verticalcenter icon-flip w2 h2'>
                     <a class='link'   href='pages.php?Pg=refArtikel'>
                         <i class='fas fa-newspaper'></i>
                         <p class='title'>Artikel</p>
                     </a>
                 </div>
 
-                <div class='tile purple title-scaleup icon-scaledownrotate360cw w3 h1'>
+                <div class='tile purple title-scaleup icon-scaledownrotate360cw w2 h2'>
                     <a class='link'   href='pages.php?Pg=refProduk'>
                         <i class='fas fa-flask'></i>
                         <p class='title'>Produk</p>
                     </a>
                 </div>
 
-                <div class='tile green icon-featurefade title-indent w3 h1'>
+                <div class='tile green icon-featurefade title-indent w2 h2'>
                     <a class='link'  href='pages.php?Pg=refGalery' >
                         <i class='fas fa-images'></i>
                         <p class='title'>Galery</p>
                     </a>
                 </div>
 
-                <div class='tile blue icon-flip title-fadeout w3 h1'>
+                <div class='tile blue icon-flip title-fadeout w2 h2'>
                     <a class='link'  href='pages.php?Pg=refMember'>
                         <i class='fas fa-users'></i>
                         <p class='title'>Member</p>
@@ -137,7 +137,7 @@ $Main->Base =
                     </div>
                 </div>
                 -->
-                <div class='tile title-fade icon-featureccw w2 h1'>
+                <div class='tile title-fade icon-featureccw w4 h4'>
                     <a class='link' target='_blank' href='https://nutrisio.rm-rf.studio'>
                         <div class='text'>
                             <p class='text-medium'>
@@ -220,9 +220,9 @@ $Main->Base =
         <section id='sidebar'>
             <ul>
                 <li></li>
-                <li><a data-scroll='scrollto'  href='#start' ><i class='fas fa-cogs'></i></a></li>
+                <li><a data-scroll='scrollto'  href='#start' ><i class='fa fa-windows fa fa-4x'></i></a></li>
                 <li><a data-scroll='scrollto'  href='#services' ><i class='fa fa-pencil fa fa-4x'></i></a></li>
-                <li onclick=window.location.href='index.php?Pg=LogOut' ><a data-scroll='scrollto'  onclick=window.location.href='index.php?Pg=LogOut' ><i class='fas fa-sign-out-alt'></i></a></li>
+                <li><a data-scroll='scrollto'  href='#about' ><i class='fa fa-user fa fa-4x'></i></a></li>
                 <li><a data-scroll='scrollto'  href='#portfolio' ><i class='fa fa-picture-o fa fa-4x'></i></a></li>
             </ul>
         </section>

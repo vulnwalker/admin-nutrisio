@@ -381,6 +381,20 @@ class penjualanProdukObj extends configClass
                   $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
                   $jumlahProduk += $arrayBagiKomisi[$i]['jumlahProduk'];
                 }
+                //MEMBER LEVEL1
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[0]->LEVEL1."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel1 where id_member = '".$decodeUplineInvitor[0]->LEVEL1."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[0]->LEVEL1,
+                    "komisi" => $totalKomisiLevel1,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel1 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel1,
@@ -389,6 +403,21 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberLevel1,$decodeUplineInvitor[0]->LEVEL1);
+
+                //MEMBER LEVEL 2
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[1]->LEVEL2."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel2 where id_member = '".$decodeUplineInvitor[1]->LEVEL2."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[1]->LEVEL2,
+                    "komisi" => $totalKomisiLevel2,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel2 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel2,
@@ -397,6 +426,21 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberLevel2,$decodeUplineInvitor[1]->LEVEL2);
+
+                //MEMBER LEVEL 3
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[2]->LEVEL3."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel3 where id_member = '".$decodeUplineInvitor[2]->LEVEL3."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[2]->LEVEL3,
+                    "komisi" => $totalKomisiLevel3,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel3 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel3,
@@ -405,6 +449,21 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberLevel3,$decodeUplineInvitor[2]->LEVEL3);
+
+                //MEMBER LEVEL4
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[3]->LEVEL4."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel4 where id_member = '".$decodeUplineInvitor[3]->LEVEL4."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[3]->LEVEL4,
+                    "komisi" => $totalKomisiLevel4,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel4 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel4,
@@ -413,6 +472,9 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberLevel4,$decodeUplineInvitor[3]->LEVEL4);
+
+                //MEMBER DIRECT
+
                 $dataKomisiMemberDirect = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $getDataProduk['harga'] - $getDataProduk['harga_member'],
@@ -463,6 +525,20 @@ class penjualanProdukObj extends configClass
                   $totalKomisiLevel4 += $arrayBagiKomisi[$i]['komisiLevel4'];
                   $jumlahProduk += $arrayBagiKomisi[$i]['jumlahProduk'];
                 }
+                //MEMBER LEVEL1
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[0]->LEVEL1."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel1 where id_member = '".$decodeUplineInvitor[0]->LEVEL1."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[0]->LEVEL1,
+                    "komisi" => $totalKomisiLevel1,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel1 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel1,
@@ -471,6 +547,20 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberLevel1,$decodeUplineInvitor[0]->LEVEL1);
+                //MEMBER LEVEL 2
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[1]->LEVEL2."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel2 where id_member = '".$decodeUplineInvitor[1]->LEVEL2."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[1]->LEVEL2,
+                    "komisi" => $totalKomisiLevel2,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel2 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel2,
@@ -479,6 +569,20 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberLevel2,$decodeUplineInvitor[1]->LEVEL2);
+                //MEMBER LEVEL 3
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[2]->LEVEL3."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel3 where id_member = '".$decodeUplineInvitor[2]->LEVEL3."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[2]->LEVEL3,
+                    "komisi" => $totalKomisiLevel3,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel3 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel3,
@@ -487,6 +591,20 @@ class penjualanProdukObj extends configClass
                   'tanggal' => date("Y-m-d"),
                 );
                 $this->insertKomisi($dataKomisiMemberLevel3,$decodeUplineInvitor[2]->LEVEL3);
+                //MEMBER LEVEL4
+                if(sqlRowCount(sqlQuery("select * from rekap_transaksi where id_member = '".$decodeUplineInvitor[3]->LEVEL4."' and periode = '".date("Y-m")."'")) !=0 ){
+                  sqlQuery("UPDATE rekap_transaksi set komisi = komisi + $totalKomisiLevel4 where id_member = '".$decodeUplineInvitor[3]->LEVEL4."' and periode = '".date("Y-m")."' ");
+                }else{
+                  $dataRekapTransaksi = array(
+                    "id_member" => $decodeUplineInvitor[3]->LEVEL4,
+                    "komisi" => $totalKomisiLevel4,
+                    "jumlah_penjualan" => 0,
+                    "jumlah_barang" => 0,
+                    "periode" => date("Y-m"),
+                  );
+                  $queryInsertRekapTransaksi = sqlInsert("rekap_transaksi",$dataRekapTransaksi);
+                  sqlQuery($queryInsertRekapTransaksi);
+                }
                 $dataKomisiMemberLevel4 = array(
                   'id_penjualan' => $idPenjualan,
                   'komisi' => $totalKomisiLevel4,
